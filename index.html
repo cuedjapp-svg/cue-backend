@@ -1,771 +1,1033 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8"/> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CUE — Support</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<title>CUE — Find. Book. Pay. Review.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;background:#080808;font-family:'Barlow','Helvetica Neue',sans-serif;}
+:root{--Y:#FFC300;--Y2:#FFD740;--BG:#080808;--CARD:#111;--BORDER:rgba(255,195,0,.13);--TEXT:#ddd;--MUTED:#444;--D:'Barlow Condensed',sans-serif;--B:'Barlow',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--BG);color:var(--TEXT);font-family:var(--B);overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
 
-/* ── VIEWS ── */
-.view{display:none}
-.view.active{display:flex}
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 52px;border-bottom:1px solid transparent;transition:all .3s}
+nav.s{border-color:var(--BORDER);background:rgba(8,8,8,.97);backdrop-filter:blur(18px)}
+.logo-svg{width:38px;height:38px;flex-shrink:0}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-cta{display:flex;gap:10px;align-items:center}
+.bg{padding:8px 20px;border:1px solid var(--BORDER);background:transparent;color:var(--MUTED);font-family:var(--B);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.bg:hover{border-color:var(--Y);color:var(--Y)}
+.bp{padding:8px 20px;border:none;background:var(--Y);color:#000;font-family:var(--D);font-size:14px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.bp:hover{background:var(--Y2)}
 
-/* ── CHATBOT VIEW ── */
-#viewChat{min-height:100vh;align-items:center;justify-content:center;padding:20px}
-.chat-wrap{
-  width:100%;max-width:480px;background:#111;
-  border:1px solid rgba(255,195,0,.18);
-  display:flex;flex-direction:column;
-  height:min(680px,92vh);
-  box-shadow:0 32px 80px rgba(0,0,0,.8);overflow:hidden;
-}
-.chat-header{
-  padding:16px 20px;border-bottom:1px solid rgba(255,195,0,.12);
-  background:#0a0a0a;display:flex;align-items:center;gap:12px;flex-shrink:0;
-}
-.header-info h2{
-  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;
-  text-transform:uppercase;letter-spacing:1px;color:#fff;
-}
-.header-status{font-size:10px;color:#FFC300;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;display:flex;align-items:center;gap:5px}
-.dot-green{width:6px;height:6px;border-radius:50%;background:#00c864;display:inline-block}
-.header-count{font-size:9px;color:#333;margin-left:auto;text-align:right;line-height:1.5}
-.chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:10px}
-.msg{display:flex;align-items:flex-end;gap:8px;animation:slideIn .25s ease forwards}
-.msg.user{justify-content:flex-end}.msg.bot{justify-content:flex-start}
-.bubble{max-width:80%;padding:9px 13px;font-size:13px;line-height:1.65;white-space:pre-line}
-.bubble.user{background:#FFC300;color:#000;font-weight:600}
-.bubble.bot{background:#191919;color:#ddd;border:1px solid rgba(255,255,255,.06)}
-.bot-avatar{flex-shrink:0;margin-bottom:2px}
-.typing-dots{display:flex;gap:4px;align-items:center;padding:12px 14px}
-.typing-dots span{width:6px;height:6px;border-radius:50%;background:#444;animation:bounce 1.2s ease-in-out infinite}
-.typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
-.suggestions{margin-top:8px;padding-left:30px}
-.sugg-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
-.sugg-list{display:flex;flex-wrap:wrap;gap:6px}
-.sugg-btn{padding:6px 12px;background:transparent;border:1px solid rgba(255,195,0,.2);color:#888;font-size:11px;font-family:inherit;cursor:pointer;transition:all .2s}
-.sugg-btn:hover{background:rgba(255,195,0,.1);border-color:#FFC300;color:#FFC300;transform:translateY(-1px)}
-.chat-input-area{border-top:1px solid rgba(255,195,0,.1);padding:12px;background:#0a0a0a;display:flex;gap:8px;flex-shrink:0}
-.chat-input{flex:1;background:#000;border:1px solid rgba(255,255,255,.08);padding:10px 14px;color:#fff;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
-.chat-input:focus{border-color:#FFC300}.chat-input::placeholder{color:#333}
-.send-btn{width:40px;height:40px;background:#FFC300;border:none;cursor:pointer;font-size:16px;color:#000;font-weight:700;transition:background .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.send-btn:hover{background:#FFD740}.send-btn:disabled{opacity:.4;cursor:not-allowed}
-.chat-footer{padding:7px 16px;background:#0a0a0a;border-top:1px solid rgba(255,255,255,.03);display:flex;justify-content:space-between;align-items:center}
-.chat-footer span{font-size:9px;color:#222;text-transform:uppercase;letter-spacing:1.5px}
-.modo-link{font-size:9px;color:#1a1a1a;text-decoration:none;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:color .2s}
-.modo-link:hover{color:#444}
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px 60px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(255,195,0,.04) 0%,transparent 70%);pointer-events:none}
+.hero-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);width:min(520px,70vw);height:min(520px,70vw);opacity:.07;pointer-events:none}
+.hey{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--Y);margin-bottom:24px;opacity:0;animation:fadeUp .8s .3s ease forwards}
+h1{font-family:var(--D);font-size:clamp(64px,12vw,140px);font-weight:900;text-transform:uppercase;color:#fff;line-height:.92;letter-spacing:-2px;opacity:0;animation:fadeUp .8s .5s ease forwards}
+h1 .y{color:var(--Y)}
+.hsub{font-size:clamp(14px,2vw,17px);color:var(--MUTED);max-width:520px;line-height:1.7;margin:24px auto 0;font-weight:300;opacity:0;animation:fadeUp .8s .7s ease forwards}
+.hbar{display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .9s ease forwards}
+.bh{padding:14px 32px;font-family:var(--D);font-size:18px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.bh.y{background:var(--Y);border:none;color:#000}.bh.y:hover{background:var(--Y2)}
+.bh.o{background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff}.bh.o:hover{border-color:var(--Y);color:var(--Y)}
+.hstats{display:flex;gap:52px;justify-content:center;margin-top:60px;opacity:0;animation:fadeUp .8s 1.1s ease forwards}
+.hstat-val{font-family:var(--D);font-size:42px;font-weight:900;color:var(--Y);line-height:1}
+.hstat-label{font-size:10px;color:var(--MUTED);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.ticker{position:absolute;bottom:0;left:0;right:0;border-top:1px solid var(--BORDER);background:rgba(8,8,8,.8);padding:12px 0;overflow:hidden}
+.ticker-inner{display:flex;gap:0;white-space:nowrap;animation:tick 18s linear infinite}
+.ticker-item{font-family:var(--D);font-size:13px;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:var(--MUTED);padding:0 28px}
+.ticker-item span{color:var(--Y);margin-right:28px}
 
-/* ── MODALS (API KEY + AUTH) ── */
-.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:20px}
-.modal-wrap.hidden{display:none}
-.modal{background:#111;border:1px solid #FFC300;padding:36px 32px;width:100%;max-width:440px}
-.modal-logo{display:block;margin:0 auto 16px}
-.modal h3{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#fff;text-align:center;margin-bottom:6px}
-.modal-sub{font-size:12px;color:#555;text-align:center;margin-bottom:22px;line-height:1.6}
-.modal-sub a{color:#FFC300;text-decoration:none}
-.m-input{width:100%;background:#000;border:1px solid rgba(255,195,0,.2);padding:12px 14px;color:#fff;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s;margin-bottom:10px}
-.m-input:focus{border-color:#FFC300}.m-input::placeholder{color:#333}
-.m-input.mono{font-family:monospace;letter-spacing:.5px}
-.m-err{font-size:11px;color:#ff4444;text-align:center;padding:6px 10px;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);margin-bottom:12px;display:none}
-.m-err.on{display:block}
-.modal-btns{display:flex;gap:10px}
-.btn-cancel{padding:12px 18px;background:transparent;border:1px solid rgba(255,255,255,.1);color:#555;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .2s}
-.btn-cancel:hover{border-color:#555;color:#888}
-.btn-primary{flex:1;padding:12px;background:#FFC300;border:none;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s}
-.btn-primary:hover{background:#FFD740}
-.modal-note{font-size:10px;color:#333;text-align:center;margin-top:14px;line-height:1.6}
-.modal-note span{color:#FFC300;cursor:pointer;text-decoration:underline}
+/* ─── SECTIONS ─── */
+section{padding:100px 52px}
+.stag{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--Y);margin-bottom:14px}
+.stitle{font-family:var(--D);font-size:clamp(36px,6vw,72px);font-weight:900;text-transform:uppercase;color:#fff;line-height:.95;letter-spacing:-1px;margin-bottom:20px}
+.ssub{font-size:15px;color:var(--MUTED);max-width:520px;line-height:1.7;font-weight:300}
 
-/* ── MODERATOR LOGIN VIEW ── */
-#viewModoLogin{min-height:100vh;align-items:center;justify-content:center;padding:20px;flex-direction:column}
-.modo-login-box{width:100%;max-width:400px;background:#111;border:1px solid rgba(255,195,0,.3);padding:44px 36px}
-.modo-login-box h2{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;text-align:center;margin-bottom:4px;letter-spacing:.5px}
-.modo-login-box p{font-size:11px;color:#444;text-align:center;margin-bottom:28px;letter-spacing:1px;text-transform:uppercase}
-.modo-login-box label{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px}
+/* ─── FEATURES GRID ─── */
+.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px}
+.fcard{background:var(--CARD);padding:36px 32px;border:1px solid var(--BORDER);transition:all .25s;position:relative;overflow:hidden}
+.fcard:hover{border-color:var(--Y);background:#161616}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--Y);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.fcard:hover::before{transform:scaleX(1)}
+.fcard-icon{font-size:28px;margin-bottom:16px}
+.fcard-title{font-family:var(--D);font-size:20px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:8px;letter-spacing:.5px}
+.fcard-desc{font-size:13px;color:var(--MUTED);line-height:1.7}
 
-/* ── MODERATOR DASHBOARD VIEW ── */
-#viewModo{min-height:100vh;flex-direction:column;background:#080808}
-.modo-nav{
-  position:fixed;top:0;left:0;right:0;z-index:50;
-  background:#0a0a0a;border-bottom:1px solid rgba(255,195,0,.12);
-  padding:0 36px;height:60px;
-  display:flex;align-items:center;gap:0;
-}
-.modo-nav-brand{display:flex;align-items:center;gap:10px;margin-right:40px}
-.modo-nav-brand span{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff}
-.modo-nav-brand em{font-style:normal;font-size:9px;background:#FFC300;color:#000;padding:2px 7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:4px}
-.modo-tab{padding:0 18px;height:60px;display:flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
-.modo-tab:hover{color:#888}.modo-tab.active{color:#FFC300;border-bottom-color:#FFC300}
-.modo-logout{margin-left:auto;padding:7px 16px;border:1px solid rgba(255,255,255,.08);background:transparent;color:#444;font-family:inherit;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+/* ─── TWO COL ─── */
+.twoc{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px}
+
+/* ─── AI MATCHING ─── */
+.ai-form{background:var(--CARD);border:1px solid var(--BORDER);padding:36px}
+.aif-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px;display:block}
+.aif-input,.aif-select{width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none;transition:border-color .2s}
+.aif-input:focus,.aif-select:focus{border-color:var(--Y)}
+.aif-select{appearance:none;cursor:pointer}
+.aif-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.brun{width:100%;padding:14px;background:var(--Y);border:none;color:#000;font-family:var(--D);font-size:18px;font-weight:900;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.brun:hover{background:var(--Y2)}.brun:disabled{opacity:.5;cursor:not-allowed}
+.spin{width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.spin.on{display:block}
+
+/* DJ CARDS */
+.dj-results{display:flex;flex-direction:column;gap:16px;margin-top:0}
+.dj-card{background:var(--CARD);border:1px solid var(--BORDER);padding:22px;display:flex;gap:18px;align-items:flex-start;transition:all .2s}
+.dj-card:hover{border-color:var(--Y)}
+.dj-avatar{width:52px;height:52px;background:var(--Y);display:flex;align-items:center;justify-content:center;font-family:var(--D);font-size:24px;font-weight:900;color:#000;flex-shrink:0}
+.dj-name{font-family:var(--D);font-size:18px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:.5px}
+.dj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.dj-tag{font-size:9px;font-weight:700;padding:2px 8px;border:1px solid var(--BORDER);color:var(--MUTED);text-transform:uppercase;letter-spacing:1px}
+.dj-tag.y{border-color:var(--Y);color:var(--Y)}
+.dj-desc{font-size:12px;color:var(--MUTED);margin-top:8px;line-height:1.65}
+.dj-match{font-family:var(--D);font-size:22px;font-weight:900;color:var(--Y);line-height:1}
+.dj-match-label{font-size:9px;color:var(--MUTED);letter-spacing:1px;text-transform:uppercase}
+.result-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;gap:14px}
+.result-placeholder-icon{font-size:40px;opacity:.15}
+.result-placeholder-text{font-family:var(--D);font-size:20px;font-weight:900;text-transform:uppercase;color:#fff;opacity:.15}
+
+/* ─── CONTRACT ─── */
+.cgen-form{background:var(--CARD);border:1px solid var(--BORDER);padding:36px}
+.cgen-out{background:#000;border:1px solid var(--BORDER);padding:28px;min-height:380px;font-size:13px;color:var(--MUTED);line-height:1.8;white-space:pre-line;position:relative}
+.cgen-out .section-title{font-family:var(--D);font-size:13px;font-weight:900;text-transform:uppercase;color:var(--Y);letter-spacing:2px;display:flex;align-items:center;gap:8px;margin:20px 0 8px}
+.cgen-out .section-title::before{content:'';width:3px;height:14px;background:var(--Y);display:block;flex-shrink:0}
+.cgen-out p{color:#aaa;line-height:1.85;margin-bottom:6px}
+.cgen-toolbar{display:flex;gap:10px;margin-top:14px}
+.ctool-btn{padding:8px 18px;font-family:var(--D);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.ctool-btn.copy{background:rgba(255,195,0,.1);color:var(--Y);border:1px solid rgba(255,195,0,.25)}
+.ctool-btn.copy:hover{background:var(--Y);color:#000}
+.ctool-btn.print{background:transparent;color:var(--MUTED);border:1px solid var(--BORDER)}
+.ctool-btn.print:hover{border-color:#888;color:#fff}
+.pulsing{animation:pulse 1.5s ease-in-out infinite}
+
+/* ─── PRICING ─── */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px;max-width:800px;margin-left:auto;margin-right:auto}
+.pcard{background:var(--CARD);border:1px solid var(--BORDER);padding:36px 28px;position:relative;transition:all .25s}
+.pcard.featured{border-color:var(--Y);background:#131300}
+.pcard-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--Y);color:#000;font-size:9px;font-weight:900;padding:3px 14px;letter-spacing:2px;text-transform:uppercase}
+.pcard-name{font-family:var(--D);font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:3px;color:var(--MUTED);margin-bottom:12px}
+.pcard-price{font-family:var(--D);font-size:52px;font-weight:900;color:#fff;line-height:1}
+.pcard-price sup{font-size:24px;vertical-align:top;margin-top:10px;color:var(--MUTED)}
+.pcard-price span{font-size:14px;color:var(--MUTED);font-weight:400;font-family:var(--B)}
+.pcard-comm{font-size:13px;color:var(--Y);font-weight:700;margin:10px 0 20px}
+.pcard-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.pcard-features li{font-size:12px;color:var(--MUTED);display:flex;align-items:center;gap:8px}
+.pcard-features li::before{content:'✓';color:var(--Y);font-weight:900;font-size:11px}
+.pcard-btn{width:100%;padding:12px;font-family:var(--D);font-size:16px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.pcard.featured .pcard-btn{background:var(--Y);border:none;color:#000}
+.pcard.featured .pcard-btn:hover{background:var(--Y2)}
+.pcard:not(.featured) .pcard-btn{background:transparent;border:1px solid var(--BORDER);color:var(--MUTED)}
+.pcard:not(.featured) .pcard-btn:hover{border-color:var(--Y);color:var(--Y)}
+
+/* ─── FOOTER ─── */
+footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px}
+.fbrand p{font-size:12px;color:#1e1e1e;line-height:1.7;max-width:220px;margin-top:12px}
+.fcol h5{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--MUTED);margin-bottom:12px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.fcol ul a{font-size:12px;color:#1e1e1e;text-decoration:none;transition:color .2s}
+.fcol ul a:hover{color:var(--Y)}
+.fbot{border-top:1px solid var(--BORDER);padding:18px 52px;display:flex;justify-content:space-between;align-items:center}
+.fbot span{font-size:10px;color:#1a1a1a}
+
+/* ─── AUTH OVERLAY ─── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:20px}
+.overlay.hidden{display:none}
+.amodal{background:var(--CARD);border:1px solid var(--BORDER);padding:44px 40px;width:420px;max-width:95vw;position:relative}
+.amodal h2{font-family:var(--D);font-size:36px;font-weight:900;text-transform:uppercase;color:#fff;text-align:center;margin-bottom:5px}
+.amodal p{font-size:12px;color:var(--MUTED);text-align:center;margin-bottom:28px}
+.ainput{width:100%;background:#0a0a0a;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:10px;outline:none;transition:border-color .2s}
+.ainput:focus{border-color:var(--Y)}
+.aerr{font-size:11px;color:#ff4444;margin-bottom:10px;display:none;text-align:center}
+.aerr.on{display:block}
+.aclose{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--MUTED);cursor:pointer;font-size:18px}
+.aclose:hover{color:#fff}
+.asel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.aopt{padding:18px;border:1px solid var(--BORDER);background:#0a0a0a;cursor:pointer;transition:all .2s;text-align:center}
+.aopt:hover,.aopt.sel{border-color:var(--Y);background:rgba(255,195,0,.05)}
+.aopt .aicon{font-size:28px;margin-bottom:6px}
+.aopt .alabel{font-family:var(--D);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#fff}
+.aopt .adesc{font-size:10px;color:var(--MUTED);margin-top:2px}
+
+/* ─── DASHBOARD ─── */
+.dashboard{display:none;min-height:100vh;background:var(--BG);padding:80px 52px 60px}
+.dashboard.active{display:block}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:44px;padding-bottom:24px;border-bottom:1px solid var(--BORDER)}
+.dash-title{font-family:var(--D);font-size:clamp(32px,5vw,64px);font-weight:900;text-transform:uppercase;color:#fff}
+.dash-title span{color:var(--Y)}
+.dash-user{display:flex;align-items:center;gap:12px}
+.dash-avatar{width:40px;height:40px;background:var(--Y);display:flex;align-items:center;justify-content:center;font-family:var(--D);font-size:20px;font-weight:900;color:#000}
+.dash-name{font-size:13px;font-weight:600;color:#fff}
+.dash-role{font-size:10px;color:var(--Y);text-transform:uppercase;letter-spacing:2px}
+.logout-btn{padding:7px 16px;border:1px solid var(--BORDER);background:transparent;color:var(--MUTED);font-family:var(--B);font-size:11px;font-weight:600;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .2s}
+.logout-btn:hover{border-color:#ff4444;color:#ff4444}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
+.dstat{background:var(--CARD);border:1px solid var(--BORDER);padding:22px 20px}
+.dstat-val{font-family:var(--D);font-size:38px;font-weight:900;color:var(--Y);line-height:1}
+.dstat-label{font-size:10px;color:var(--MUTED);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+.dash-section{margin-top:36px}
+.dsec-title{font-family:var(--D);font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:16px;letter-spacing:.5px}
+.dash-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dcard{background:var(--CARD);border:1px solid var(--BORDER);padding:22px;position:relative;cursor:pointer;transition:all .25s}
+.dcard:hover{border-color:var(--Y);background:#161616}
+.dcard-icon{font-size:22px;margin-bottom:10px}
+.dcard-title{font-family:var(--D);font-size:17px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:5px;letter-spacing:.5px}
+.dcard-desc{font-size:11px;color:var(--MUTED);line-height:1.65}
+.dcard-badge{position:absolute;top:12px;right:12px;background:var(--Y);color:#000;font-size:8px;font-weight:700;padding:2px 7px;text-transform:uppercase;letter-spacing:1px}
+
+/* ─── CHATBOT FLOAT ─── */
+.chat-fab{position:fixed;bottom:28px;right:28px;z-index:400;width:54px;height:54px;background:var(--Y);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 32px rgba(255,195,0,.3);transition:all .2s}
+.chat-fab:hover{background:var(--Y2);transform:scale(1.07)}
+.cwin{position:fixed;bottom:96px;right:28px;z-index:400;width:360px;background:var(--CARD);border:1px solid var(--BORDER);display:flex;flex-direction:column;height:480px;box-shadow:0 24px 80px rgba(0,0,0,.7);transform:scale(.92) translateY(20px);opacity:0;pointer-events:none;transition:all .25s;transform-origin:bottom right}
+.cwin.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.chin{background:#0a0a0a;padding:12px 14px;border-bottom:1px solid var(--BORDER);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chin-info h4{font-family:var(--D);font-size:13px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:.5px}
+.chin-info p{font-size:9px;color:var(--Y);letter-spacing:1.5px;text-transform:uppercase}
+.cclose{margin-left:auto;background:none;border:none;color:var(--MUTED);cursor:pointer;font-size:16px}
+.cclose:hover{color:#fff}
+.cmsgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.cmsg{max-width:82%;padding:8px 11px;font-size:12px;line-height:1.6;white-space:pre-line}
+.cmsg.user{background:var(--Y);color:#000;font-weight:600;align-self:flex-end}
+.cmsg.bot{background:#1a1a1a;color:var(--TEXT);border:1px solid rgba(255,255,255,.05);align-self:flex-start}
+.cmsg.typing{background:#1a1a1a;border:1px solid rgba(255,255,255,.05);align-self:flex-start;display:flex;gap:4px;align-items:center;padding:10px 12px}
+.dot{width:5px;height:5px;border-radius:50%;background:#444;animation:bounce 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+.cinrow{padding:9px;border-top:1px solid var(--BORDER);display:flex;gap:6px;background:#0a0a0a;flex-shrink:0}
+.cinput{flex:1;background:#000;border:1px solid var(--BORDER);padding:8px 10px;color:var(--TEXT);font-family:var(--B);font-size:12px;outline:none}
+.cinput:focus{border-color:var(--Y)}
+.csend{width:33px;height:33px;background:var(--Y);border:none;cursor:pointer;font-size:13px;transition:all .2s;flex-shrink:0;color:#000;font-weight:700;display:flex;align-items:center;justify-content:center}
+.csend:hover{background:var(--Y2)}.csend:disabled{opacity:.4;cursor:not-allowed}
+
+/* ─── MODO ─── */
+.modo-login-wrap{position:fixed;inset:0;background:var(--BG);z-index:800;display:flex;align-items:center;justify-content:center;padding:20px}
+.modo-login-wrap.hidden{display:none}
+.modo-login-box{background:var(--CARD);border:1px solid rgba(255,195,0,.3);padding:44px 36px;width:100%;max-width:400px}
+.modo-login-box h2{font-family:var(--D);font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;text-align:center;margin-bottom:4px;letter-spacing:.5px}
+.modo-login-box p{font-size:11px;color:var(--MUTED);text-align:center;margin-bottom:28px;letter-spacing:1px;text-transform:uppercase}
+.modo-label{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:5px}
+.modo-dash{position:fixed;inset:0;background:var(--BG);z-index:800;display:none;flex-direction:column}
+.modo-dash.open{display:flex}
+.modo-nav{background:#0a0a0a;border-bottom:1px solid var(--BORDER);padding:0 28px;height:60px;display:flex;align-items:center;gap:0;flex-shrink:0;overflow-x:auto}
+.modo-nav-brand{display:flex;align-items:center;gap:10px;margin-right:32px;flex-shrink:0}
+.modo-nav-brand span{font-family:var(--D);font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff}
+.modo-nav-brand em{font-style:normal;font-size:9px;background:var(--Y);color:#000;padding:2px 7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:4px}
+.mtab{padding:0 14px;height:60px;display:flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;flex-shrink:0;white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;font-family:var(--B)}
+.mtab:hover{color:#888}.mtab.active{color:var(--Y);border-bottom-color:var(--Y)}
+.modo-logout{margin-left:auto;padding:7px 14px;border:1px solid rgba(255,255,255,.08);background:transparent;color:var(--MUTED);font-family:var(--B);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;flex-shrink:0}
 .modo-logout:hover{border-color:#ff4444;color:#ff4444}
-
-.modo-body{margin-top:60px;padding:36px;flex:1}
-.modo-section{display:none}.modo-section.active{display:block}
-
-/* stat cards */
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
-.stat-card{background:#111;border:1px solid rgba(255,195,0,.1);padding:22px 20px}
-.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;color:#FFC300;line-height:1}
-.stat-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:2px;margin-top:4px}
-
-/* section titles */
-.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:6px;letter-spacing:.5px}
-.sec-sub{font-size:12px;color:#444;margin-bottom:20px}
-
-/* tables */
-.table-wrap{background:#111;border:1px solid rgba(255,195,0,.1);overflow:hidden;margin-bottom:24px}
-.table-hdr{display:grid;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.04);background:#0a0a0a}
-.table-hdr span{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444}
-.table-row{display:grid;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
-.table-row:last-child{border-bottom:none}
-.table-row:hover{background:rgba(255,195,0,.03)}
-.table-row span{font-size:12px;color:#888;display:flex;align-items:center}
-.table-row .name{color:#ddd;font-weight:600}
-.badge{display:inline-block;padding:2px 8px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.badge.dj{background:rgba(255,195,0,.15);color:#FFC300;border:1px solid rgba(255,195,0,.3)}
-.badge.venue{background:rgba(0,150,255,.1);color:#48a0ff;border:1px solid rgba(0,150,255,.2)}
-.badge.active{background:rgba(0,200,100,.1);color:#00c864;border:1px solid rgba(0,200,100,.2)}
-.badge.pending{background:rgba(255,195,0,.1);color:#FFC300;border:1px solid rgba(255,195,0,.2)}
-.badge.banned{background:rgba(255,68,68,.1);color:#ff4444;border:1px solid rgba(255,68,68,.2)}
-
-/* action buttons */
-.act-btn{padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:inherit;border:none;transition:all .15s}
-.act-btn.warn{background:rgba(255,195,0,.15);color:#FFC300;border:1px solid rgba(255,195,0,.3)}
-.act-btn.warn:hover{background:#FFC300;color:#000}
-.act-btn.ban{background:rgba(255,68,68,.1);color:#ff4444;border:1px solid rgba(255,68,68,.2)}
-.act-btn.ban:hover{background:#ff4444;color:#fff}
-.act-btn.ok{background:rgba(0,200,100,.1);color:#00c864;border:1px solid rgba(0,200,100,.2)}
-.act-btn.ok:hover{background:#00c864;color:#000}
-
-/* FAQ editor */
-.faq-item{background:#111;border:1px solid rgba(255,195,0,.08);margin-bottom:10px;overflow:hidden}
-.faq-q{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s}
-.faq-q:hover{background:rgba(255,195,0,.03)}
-.faq-q-text{font-size:13px;color:#ddd;font-weight:600}
-.faq-q-num{font-size:10px;color:#333;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-right:12px}
-.faq-body{display:none;padding:0 18px 16px;border-top:1px solid rgba(255,255,255,.04)}
+.modo-body{flex:1;overflow-y:auto;padding:32px}
+.msec{display:none}.msec.active{display:block}
+.mstat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.mstat{background:var(--CARD);border:1px solid var(--BORDER);padding:20px}
+.mstat-val{font-family:var(--D);font-size:40px;font-weight:900;color:var(--Y);line-height:1}
+.mstat-label{font-size:10px;color:var(--MUTED);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+.msec-title{font-family:var(--D);font-size:20px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:6px;letter-spacing:.5px}
+.msec-sub{font-size:12px;color:var(--MUTED);margin-bottom:18px}
+.mtable{background:var(--CARD);border:1px solid var(--BORDER);overflow:hidden;margin-bottom:20px}
+.mth{display:grid;padding:10px 16px;background:#0a0a0a;border-bottom:1px solid rgba(255,255,255,.04)}
+.mth span{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED)}
+.mtr{display:grid;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
+.mtr:last-child{border-bottom:none}.mtr:hover{background:rgba(255,195,0,.025)}
+.mtr span{font-size:12px;color:#888;display:flex;align-items:center}
+.mtr .nm{color:var(--TEXT);font-weight:600}
+.mbadge{display:inline-block;padding:2px 8px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.mbadge.dj{background:rgba(255,195,0,.15);color:var(--Y);border:1px solid rgba(255,195,0,.3)}
+.mbadge.venue{background:rgba(0,150,255,.1);color:#48a0ff;border:1px solid rgba(0,150,255,.2)}
+.mbadge.active{background:rgba(0,200,100,.1);color:#00c864;border:1px solid rgba(0,200,100,.2)}
+.mbadge.pending{background:rgba(255,195,0,.1);color:var(--Y);border:1px solid rgba(255,195,0,.2)}
+.mact{padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--B);transition:all .15s}
+.mact.warn{background:rgba(255,195,0,.15);color:var(--Y);border:1px solid rgba(255,195,0,.3)}
+.mact.warn:hover{background:var(--Y);color:#000}
+.mact.ban{background:rgba(255,68,68,.1);color:#ff4444;border:1px solid rgba(255,68,68,.2)}
+.mact.ban:hover{background:#ff4444;color:#fff}
+.faq-item{background:var(--CARD);border:1px solid rgba(255,195,0,.08);margin-bottom:8px;overflow:hidden}
+.faq-q{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s}
+.faq-q:hover{background:rgba(255,195,0,.025)}
+.faq-q-num{font-size:10px;color:#333;font-family:var(--D);font-weight:700;margin-right:10px}
+.faq-q-text{font-size:13px;color:var(--TEXT);font-weight:600}
+.faq-body{display:none;padding:0 16px 14px;border-top:1px solid rgba(255,255,255,.04)}
 .faq-body.open{display:block}
-.faq-answer{width:100%;background:#000;border:1px solid rgba(255,195,0,.15);padding:10px 12px;color:#aaa;font-family:inherit;font-size:12px;line-height:1.7;resize:vertical;outline:none;margin-top:10px;min-height:70px;transition:border-color .2s}
-.faq-answer:focus{border-color:#FFC300}
-.faq-save{margin-top:8px;padding:6px 14px;background:#FFC300;border:none;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
-.faq-save:hover{background:#FFD740}
-.save-ok{font-size:10px;color:#00c864;margin-left:10px;display:none}
+.faq-answer{width:100%;background:#000;border:1px solid rgba(255,195,0,.15);padding:10px 12px;color:#aaa;font-family:var(--B);font-size:12px;line-height:1.7;resize:vertical;outline:none;margin-top:10px;min-height:60px;transition:border-color .2s}
+.faq-answer:focus{border-color:var(--Y)}
+.faq-save{margin-top:7px;padding:5px 14px;background:var(--Y);border:none;color:#000;font-family:var(--D);font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.faq-save:hover{background:var(--Y2)}
+.save-ok{font-size:10px;color:#00c864;margin-left:8px;display:none}
+.scard{background:var(--CARD);border:1px solid var(--BORDER);padding:22px;margin-bottom:12px}
+.scard h4{font-family:var(--D);font-size:15px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:14px;letter-spacing:.5px}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.srow:last-child{border-bottom:none}
+.srow-label{font-size:13px;color:#888}
+.toggle{width:38px;height:21px;background:#222;border:none;cursor:pointer;position:relative;border-radius:11px;transition:background .2s}
+.toggle.on{background:var(--Y)}
+.toggle::after{content:'';position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle.on::after{transform:translateX(17px)}
 
-/* chat log */
-.log-item{background:#111;border:1px solid rgba(255,255,255,.05);margin-bottom:8px;padding:14px 18px}
-.log-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.log-id{font-size:10px;color:#333;font-family:monospace}
-.log-time{font-size:10px;color:#444}
-.log-msgs{display:flex;flex-direction:column;gap:6px}
-.log-msg{font-size:12px;line-height:1.6;padding:6px 10px}
-.log-msg.u{background:rgba(255,195,0,.08);color:#FFC300;align-self:flex-start;border-left:2px solid #FFC300}
-.log-msg.a{background:rgba(255,255,255,.03);color:#888;border-left:2px solid #222}
-.log-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 
-/* reports */
-.report-item{background:#111;border:1px solid rgba(255,68,68,.15);padding:18px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
-.report-msg{font-size:12px;color:#888;line-height:1.6;margin-top:4px}
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  nav{padding:12px 18px}.nav-links{display:none}
+  section{padding:60px 18px}.hero{padding:0 18px 60px}
+  h1{font-size:clamp(52px,14vw,100px)}
+  .twoc{grid-template-columns:1fr;gap:28px}
+  .fg3{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr;max-width:320px}
+  footer{grid-template-columns:1fr 1fr;padding:32px 18px}.fbot{padding:14px 18px}
+  .hstats{gap:24px}
+  .cwin{right:10px;width:calc(100vw - 20px)}
+  .dash-grid{grid-template-columns:repeat(2,1fr)}.dash-cards{grid-template-columns:1fr 1fr}
+  .dashboard{padding:80px 18px 50px}
+  .amodal{padding:32px 22px}
+  .mstat-row{grid-template-columns:repeat(2,1fr)}
+  .modo-body{padding:20px 14px}
+}
 
-/* settings */
-.settings-card{background:#111;border:1px solid rgba(255,195,0,.1);padding:28px;margin-bottom:16px}
-.settings-card h4{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:14px;letter-spacing:.5px}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.settings-row:last-child{border-bottom:none}
-.settings-label{font-size:13px;color:#888}
-.toggle{width:40px;height:22px;background:#222;border:none;cursor:pointer;position:relative;border-radius:11px;transition:background .2s}
-.toggle.on{background:#FFC300}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
-.toggle.on::after{transform:translateX(18px)}
-
-@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
-@media(max-width:768px){
-  .stat-row{grid-template-columns:repeat(2,1fr)}
-  .modo-nav{padding:0 16px}
-  .modo-body{padding:20px 16px}
+@media print{
+  .chat-fab,.cwin,.overlay,.modo-login-wrap,.modo-dash{display:none!important}
+  nav{display:none!important}
+  body{background:#fff!important;color:#000!important}
 }
 </style>
 </head>
 <body>
 
-<!-- ══ API KEY MODAL ══ -->
-<div class="modal-wrap hidden" id="keyModal">
-  <div class="modal">
-    <svg class="modal-logo" width="44" height="44" viewBox="0 0 100 100">
-      <rect width="100" height="100" rx="16" fill="#FFC300"/>
-      <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
-      <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
-    </svg>
-    <h3>🔑 Clé API requise</h3>
-    <p class="modal-sub">Pour activer l'IA, entrez votre clé Anthropic.<br/>Obtenez-la sur <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
-    <input class="m-input mono" id="keyInput" type="password" placeholder="sk-ant-api03-..." onkeydown="if(event.key==='Enter')submitKey()"/>
-    <div class="m-err" id="keyErr"></div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="cancelKey()">Annuler</button>
-      <button class="btn-primary" onclick="submitKey()">ACTIVER L'IA →</button>
+<!-- ══ AUTH OVERLAY ══ -->
+<div class="overlay hidden" id="authOverlay">
+  <div class="amodal">
+    <button class="aclose" onclick="closeAuth()">✕</button>
+    <div style="display:flex;justify-content:center;margin-bottom:18px"><svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></div>
+    <h2>Bienvenue</h2>
+    <p id="authSubtitle">Connectez-vous à votre compte CUE</p>
+    <div id="stepRole">
+      <div class="asel">
+        <div class="aopt" id="optDJ" onclick="selectRole('dj')"><div class="aicon">🎧</div><div class="alabel">Je suis DJ</div><div class="adesc">Trouver des gigs & gérer mes bookings</div></div>
+        <div class="aopt" id="optVenue" onclick="selectRole('venue')"><div class="aicon">🏢</div><div class="alabel">Je suis Venue</div><div class="adesc">Trouver des DJs pour mes événements</div></div>
+      </div>
     </div>
-    <p class="modal-note">Clé stockée uniquement en session. <span onclick="clearKey()">Effacer et re-saisir</span></p>
+    <div id="stepLogin" style="display:none">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer" onclick="backToRole()">
+        <span style="color:var(--Y);font-size:18px">←</span>
+        <span style="font-size:11px;color:var(--MUTED);text-transform:uppercase;letter-spacing:1px">Retour</span>
+      </div>
+      <div id="roleTag" style="font-family:var(--D);font-size:13px;color:var(--Y);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;text-align:center"></div>
+      <input class="ainput" type="email" id="loginEmail" placeholder="Adresse email" autocomplete="email"/>
+      <input class="ainput" type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <div class="aerr" id="loginErr">Email ou mot de passe incorrect.</div>
+      <button class="brun" style="margin-top:4px" onclick="doLogin()">
+        <div class="spin" id="loginSpin"></div>
+        <span id="loginLabel">SE CONNECTER →</span>
+      </button>
+      <p style="font-size:10px;color:var(--MUTED);text-align:center;margin-top:14px">Pas de compte ? <a href="mailto:cue.dj.app@gmail.com" style="color:var(--Y)">Contactez-nous</a></p>
+    </div>
   </div>
 </div>
 
-<!-- ══ MODERATOR LOGIN VIEW ══ -->
-<div id="viewModoLogin" class="view">
+<!-- ══ MODERATOR LOGIN ══ -->
+<div class="modo-login-wrap hidden" id="modoLoginWrap">
   <div class="modo-login-box">
-    <svg width="48" height="48" viewBox="0 0 100 100" style="display:block;margin:0 auto 20px">
-      <rect width="100" height="100" rx="16" fill="#FFC300"/>
-      <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
-      <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
-    </svg>
+    <div style="display:flex;justify-content:center;margin-bottom:20px"><svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></div>
     <h2>Espace Modérateur</h2>
     <p>Accès restreint · CUE Platform</p>
-    <label>Adresse e-mail</label>
-    <input class="m-input" id="modoEmail" type="email" placeholder="email@exemple.com" style="margin-bottom:14px"/>
-    <label>Mot de passe</label>
-    <input class="m-input" id="modoPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')modoLogin()" style="margin-bottom:14px"/>
-    <div class="m-err" id="modoErr">Email ou mot de passe incorrect.</div>
-    <button class="btn-primary" style="width:100%;display:block;margin-top:4px" onclick="modoLogin()">ACCÉDER →</button>
-    <p style="font-size:10px;color:#333;text-align:center;margin-top:16px;cursor:pointer" onclick="showChat()">← Retour au chatbot</p>
+    <label class="modo-label">Email</label>
+    <input class="ainput" id="modoEmail" type="email" placeholder="email@exemple.com" style="margin-bottom:14px"/>
+    <label class="modo-label">Mot de passe</label>
+    <input class="ainput" id="modoPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')modoLogin()" style="margin-bottom:14px"/>
+    <div class="aerr" id="modoErr" style="display:none">Email ou mot de passe incorrect.</div>
+    <button class="brun" style="margin-top:4px" onclick="modoLogin()">ACCÉDER →</button>
+    <p style="font-size:10px;color:#222;text-align:center;margin-top:16px;cursor:pointer" onclick="hideModoLogin()">← Retour au site</p>
   </div>
 </div>
 
-<!-- ══ MODERATOR DASHBOARD VIEW ══ -->
-<div id="viewModo" class="view">
+<!-- ══ MODERATOR DASHBOARD ══ -->
+<div class="modo-dash" id="modoDash">
   <nav class="modo-nav">
     <div class="modo-nav-brand">
-      <svg width="28" height="28" viewBox="0 0 100 100">
-        <rect width="100" height="100" rx="16" fill="#FFC300"/>
-        <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
-        <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
-      </svg>
-      <span>CUE</span>
-      <em>Modérateur</em>
+      <svg width="26" height="26" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
+      <span>CUE</span><em>Modo</em>
     </div>
-    <div class="modo-tab active" onclick="switchTab('overview')">Vue d'ensemble</div>
-    <div class="modo-tab" onclick="switchTab('users')">Utilisateurs</div>
-    <div class="modo-tab" onclick="switchTab('logs')">Conversations</div>
-    <div class="modo-tab" onclick="switchTab('faq')">FAQ</div>
-    <div class="modo-tab" onclick="switchTab('reports')">Signalements</div>
-    <div class="modo-tab" onclick="switchTab('settings')">Paramètres</div>
+    <button class="mtab active" onclick="switchMTab(this,'m-overview')">Vue d'ensemble</button>
+    <button class="mtab" onclick="switchMTab(this,'m-users')">Utilisateurs</button>
+    <button class="mtab" onclick="switchMTab(this,'m-logs')">Conversations</button>
+    <button class="mtab" onclick="switchMTab(this,'m-faq')">FAQ</button>
+    <button class="mtab" onclick="switchMTab(this,'m-settings')">Paramètres</button>
     <button class="modo-logout" onclick="modoLogout()">Déconnexion</button>
   </nav>
-
   <div class="modo-body">
-
-    <!-- OVERVIEW -->
-    <div class="modo-section active" id="sec-overview">
-      <div style="margin-bottom:28px">
-        <div class="sec-title">Vue d'ensemble</div>
-        <div class="sec-sub">Tableau de bord modérateur · CUE Support Platform</div>
+    <div class="msec active" id="m-overview">
+      <div style="margin-bottom:24px"><div class="msec-title">Vue d'ensemble</div><div class="msec-sub">Tableau de bord · CUE Platform</div></div>
+      <div class="mstat-row">
+        <div class="mstat"><div class="mstat-val">12</div><div class="mstat-label">Utilisateurs</div></div>
+        <div class="mstat"><div class="mstat-val">7</div><div class="mstat-label">Conversations</div></div>
+        <div class="mstat"><div class="mstat-val">3</div><div class="mstat-label">Contrats générés</div></div>
+        <div class="mstat"><div class="mstat-val" style="color:#00c864">✓</div><div class="mstat-label">Statut plateforme</div></div>
       </div>
-      <div class="stat-row">
-        <div class="stat-card"><div class="stat-val" id="stat-users">0</div><div class="stat-label">Utilisateurs inscrits</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-convos">0</div><div class="stat-label">Conversations aujourd'hui</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-reports">0</div><div class="stat-label">Signalements en attente</div></div>
-        <div class="stat-card"><div class="stat-val" style="color:#00c864">✓</div><div class="stat-label">Statut plateforme</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-        <div>
-          <div class="sec-title" style="font-size:16px;margin-bottom:12px">Activité récente</div>
-          <div class="table-wrap">
-            <div id="activityFeed" style="padding:14px 18px">
-              <div style="font-size:12px;color:#333;text-align:center;padding:20px 0">Aucune activité récente</div>
-            </div>
-          </div>
+      <div style="background:var(--CARD);border:1px solid var(--BORDER);padding:20px">
+        <div class="msec-title" style="font-size:15px;margin-bottom:14px">Infos modérateur</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="width:44px;height:44px;background:var(--Y);display:flex;align-items:center;justify-content:center;font-family:var(--D);font-size:22px;font-weight:900;color:#000">S</div>
+          <div><div style="font-size:14px;font-weight:700;color:#fff">Stanislas Kleb</div><div style="font-size:10px;color:var(--Y);letter-spacing:1.5px;text-transform:uppercase">Administrateur</div></div>
         </div>
-        <div>
-          <div class="sec-title" style="font-size:16px;margin-bottom:12px">Infos modérateur</div>
-          <div style="background:#111;border:1px solid rgba(255,195,0,.1);padding:20px">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-              <div style="width:44px;height:44px;background:#FFC300;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#000">S</div>
-              <div>
-                <div style="font-size:14px;font-weight:700;color:#fff">Stanislas Kleb</div>
-                <div style="font-size:10px;color:#FFC300;letter-spacing:1.5px;text-transform:uppercase">Administrateur</div>
-              </div>
-            </div>
-            <div style="font-size:11px;color:#444;line-height:2">
-              <div>📧 stanislas.kleb@outlook.com</div>
-              <div>📱 +33 7 67 01 15 32</div>
-              <div>🕐 Connecté depuis <span id="loginTime">—</span></div>
-            </div>
-          </div>
+        <div style="font-size:11px;color:var(--MUTED);line-height:2.2">
+          <div>📧 stanislas.kleb@outlook.com</div><div>📱 +33 7 67 01 15 32</div><div>🔑 Accès complet</div>
         </div>
       </div>
     </div>
-
-    <!-- USERS -->
-    <div class="modo-section" id="sec-users">
-      <div class="sec-title">Utilisateurs</div>
-      <div class="sec-sub">Gestion des comptes DJ et Venue inscrits sur la plateforme</div>
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-        <input class="m-input" id="userSearch" placeholder="Rechercher un utilisateur..." style="max-width:280px;margin:0" oninput="filterUsers()"/>
-        <select id="userFilter" style="background:#000;border:1px solid rgba(255,195,0,.2);padding:10px 14px;color:#888;font-family:inherit;font-size:13px;outline:none" onchange="filterUsers()">
-          <option value="">Tous</option>
-          <option value="dj">DJs</option>
-          <option value="venue">Venues</option>
-          <option value="active">Actifs</option>
-          <option value="pending">En attente</option>
-        </select>
-      </div>
-      <div class="table-wrap">
-        <div class="table-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr">
-          <span>Utilisateur</span><span>Type</span><span>Statut</span><span>Inscrit le</span><span>Actions</span>
-        </div>
-        <div id="usersTable">
-          <!-- populated by JS -->
-        </div>
+    <div class="msec" id="m-users">
+      <div class="msec-title">Utilisateurs</div><div class="msec-sub">Gestion des comptes DJ et Venue</div>
+      <div class="mtable">
+        <div class="mth" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span>Utilisateur</span><span>Type</span><span>Statut</span><span>Inscrit</span><span>Actions</span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Lorenzo B.<div style="font-size:10px;color:#333;font-weight:400">lorenzo@cue.com</div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge active">Actif</span></span><span>01/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Club Le Rex<div style="font-size:10px;color:#333;font-weight:400">rex@lerex.fr</div></span><span><span class="mbadge venue">Venue</span></span><span><span class="mbadge active">Actif</span></span><span>15/02/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">DJ Maxime<div style="font-size:10px;color:#333;font-weight:400">maxime@dj.com</div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge pending">En attente</span></span><span>08/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
       </div>
     </div>
-
-    <!-- LOGS -->
-    <div class="modo-section" id="sec-logs">
-      <div class="sec-title">Conversations</div>
-      <div class="sec-sub">Historique des échanges avec le chatbot support</div>
-      <div id="logsContainer">
-        <div class="log-item">
-          <div class="log-meta">
-            <span class="log-id">#session-demo-001</span>
-            <span class="badge dj">DJ</span>
-            <span class="log-time">Aujourd'hui, 14h32</span>
-          </div>
-          <div class="log-msgs">
-            <div class="log-msg u"><div class="log-label">Utilisateur</div>Comment optimiser mon profil DJ ?</div>
-            <div class="log-msg a"><div class="log-label">Assistant CUE</div>Ajoutez une biographie claire, vos genres musicaux, des références, des extraits audio et vos disponibilités.</div>
-          </div>
-        </div>
-        <div class="log-item">
-          <div class="log-meta">
-            <span class="log-id">#session-demo-002</span>
-            <span class="badge venue">Venue</span>
-            <span class="log-time">Aujourd'hui, 11h15</span>
-          </div>
-          <div class="log-msgs">
-            <div class="log-msg u"><div class="log-label">Utilisateur</div>Quelle commission CUE applique-t-elle ?</div>
-            <div class="log-msg a"><div class="log-label">Assistant CUE</div>Starter : gratuit, 7% commission. Pro DJ : 29€/mois, 3%. Business : 149€/mois, 0%.</div>
-          </div>
-        </div>
-        <div style="text-align:center;padding:20px;font-size:12px;color:#333">Les vraies conversations s'enregistreront ici en production</div>
+    <div class="msec" id="m-logs">
+      <div class="msec-title">Conversations</div><div class="msec-sub">Historique des échanges chatbot</div>
+      <div style="text-align:center;padding:20px;font-size:12px;color:#2a2a2a">Les conversations s'enregistreront ici en production</div>
+    </div>
+    <div class="msec" id="m-faq">
+      <div class="msec-title">Éditeur FAQ</div><div class="msec-sub">Modifiez les réponses — appliqué immédiatement au chatbot</div>
+      <div id="faqEditorContainer"></div>
+    </div>
+    <div class="msec" id="m-settings">
+      <div class="msec-title">Paramètres</div><div class="msec-sub">Configuration de la plateforme</div>
+      <div class="scard"><h4>Chatbot & IA</h4>
+        <div class="srow"><div class="srow-label">Chatbot actif</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div class="srow-label">Générateur de contrats actif</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div class="srow-label">Suggestions rapides</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+      </div>
+      <div class="scard"><h4>Sécurité</h4>
+        <div class="srow"><div class="srow-label">Compte modérateur</div><span style="font-size:12px;color:var(--Y)">stanislas.kleb@outlook.com</span></div>
+        <div class="srow"><div class="srow-label">Changer le mot de passe</div><button class="mact warn" onclick="alert('Disponible en production')">Modifier</button></div>
       </div>
     </div>
-
-    <!-- FAQ EDITOR -->
-    <div class="modo-section" id="sec-faq">
-      <div class="sec-title">Éditeur FAQ</div>
-      <div class="sec-sub">Modifiez les réponses du chatbot en temps réel — 30 questions disponibles</div>
-      <div id="faqEditor"><!-- populated by JS --></div>
-    </div>
-
-    <!-- REPORTS -->
-    <div class="modo-section" id="sec-reports">
-      <div class="sec-title">Signalements</div>
-      <div class="sec-sub">Comportements signalés par les utilisateurs</div>
-      <div class="report-item">
-        <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-            <span class="badge pending">En attente</span>
-            <span style="font-size:10px;color:#444">Il y a 2 heures</span>
-          </div>
-          <div style="font-size:13px;color:#ddd;font-weight:600">Signalement : profil suspect</div>
-          <div class="report-msg">Un utilisateur a signalé un profil DJ avec des photos non conformes et des informations incohérentes.</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="act-btn ok">Résoudre</button>
-          <button class="act-btn ban">Suspendre</button>
-        </div>
-      </div>
-      <div style="text-align:center;padding:28px;font-size:12px;color:#333">Les nouveaux signalements apparaîtront ici automatiquement</div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div class="modo-section" id="sec-settings">
-      <div class="sec-title">Paramètres</div>
-      <div class="sec-sub">Configuration de la plateforme de support</div>
-      <div class="settings-card">
-        <h4>Chatbot</h4>
-        <div class="settings-row">
-          <div class="settings-label">Chatbot actif</div>
-          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
-        </div>
-        <div class="settings-row">
-          <div class="settings-label">Suggestions rapides</div>
-          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
-        </div>
-        <div class="settings-row">
-          <div class="settings-label">Escalade automatique vers support humain</div>
-          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
-        </div>
-        <div class="settings-row">
-          <div class="settings-label">Langue par défaut</div>
-          <select style="background:#000;border:1px solid rgba(255,195,0,.2);padding:6px 12px;color:#888;font-family:inherit;font-size:12px;outline:none">
-            <option>Automatique (FR/EN)</option>
-            <option>Français uniquement</option>
-            <option>English only</option>
-          </select>
-        </div>
-      </div>
-      <div class="settings-card">
-        <h4>Notifications</h4>
-        <div class="settings-row">
-          <div class="settings-label">Alertes signalements par email</div>
-          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
-        </div>
-        <div class="settings-row">
-          <div class="settings-label">Résumé quotidien</div>
-          <button class="toggle" onclick="this.classList.toggle('on')"></button>
-        </div>
-        <div class="settings-row">
-          <div class="settings-label">Email de réception</div>
-          <span style="font-size:12px;color:#FFC300">stanislas.kleb@outlook.com</span>
-        </div>
-      </div>
-      <div class="settings-card">
-        <h4>Sécurité</h4>
-        <div class="settings-row">
-          <div class="settings-label">Compte modérateur</div>
-          <span style="font-size:12px;color:#888">stanislas.kleb@outlook.com</span>
-        </div>
-        <div class="settings-row">
-          <div class="settings-label">Changer le mot de passe</div>
-          <button class="act-btn warn" onclick="alert('Fonctionnalité disponible en production')">Modifier</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
-<!-- ══ CHAT VIEW ══ -->
-<div id="viewChat" class="view active">
-  <div class="chat-wrap">
-    <div class="chat-header">
-      <svg width="38" height="38" viewBox="0 0 100 100">
-        <rect width="100" height="100" rx="16" fill="#FFC300"/>
-        <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
-        <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
-      </svg>
-      <div class="header-info">
-        <h2>CUE Support</h2>
-        <div class="header-status"><span class="dot-green"></span>Assistant IA · FAQ intégrée</div>
+<!-- ══ MAIN SITE ══ -->
+<div id="mainSite">
+
+<nav id="nav">
+  <a href="#" onclick="goHome()" style="display:flex;align-items:center">
+    <svg class="logo-svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Fonctionnalités</a></li>
+    <li><a href="#matching">AI Matching</a></li>
+    <li><a href="#contracts">Contrats</a></li>
+    <li><a href="#pricing">Tarifs</a></li>
+  </ul>
+  <div class="nav-cta" id="navCta">
+    <button class="bg" onclick="openAuth()">Connexion</button>
+    <button class="bp" onclick="openAuth()">Rejoindre CUE</button>
+  </div>
+</nav>
+
+<section class="hero" id="heroSection">
+  <div class="hero-bg"></div>
+  <svg class="hero-logo" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
+  <p class="hey">✦ Find / Book / Pay / Review</p>
+  <h1>LA SCÈNE<br/>COMMENCE <span class="y">ICI.</span></h1>
+  <p class="hsub">Connectez les DJs vérifiés avec les clubs, agences, mariages et événements privés. Booking intelligent, contrats IA et matching avancé.</p>
+  <div class="hbar">
+    <button class="bh y" onclick="openAuthAs('venue')">Je suis un Venue</button>
+    <button class="bh o" onclick="openAuthAs('dj')">Je suis DJ</button>
+  </div>
+  <div class="hstats">
+    <div><div class="hstat-val">2M+</div><div class="hstat-label">DJs dans le monde</div></div>
+    <div style="width:1px;background:var(--BORDER)"></div>
+    <div><div class="hstat-val">55%</div><div class="hstat-label">Veulent plus de gigs</div></div>
+    <div style="width:1px;background:var(--BORDER)"></div>
+    <div><div class="hstat-val">9B$</div><div class="hstat-label">Marché global</div></div>
+  </div>
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item"><span>✦</span>FIND</span><span class="ticker-item"><span>✦</span>BOOK</span><span class="ticker-item"><span>✦</span>PAY</span><span class="ticker-item"><span>✦</span>REVIEW</span><span class="ticker-item"><span>✦</span>CONNECT</span><span class="ticker-item"><span>✦</span>PERFORM</span><span class="ticker-item"><span>✦</span>FIND</span><span class="ticker-item"><span>✦</span>BOOK</span><span class="ticker-item"><span>✦</span>PAY</span><span class="ticker-item"><span>✦</span>REVIEW</span><span class="ticker-item"><span>✦</span>CONNECT</span><span class="ticker-item"><span>✦</span>PERFORM</span>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <p class="stag">Plateforme</p>
+  <h2 class="stitle">TOUT CE DONT<br/>VOUS AVEZ BESOIN.</h2>
+  <p class="ssub">De la recherche au paiement, CUE gère chaque étape du booking avec intelligence.</p>
+  <div class="fg3">
+    <div class="fcard"><div class="fcard-icon">🎯</div><div class="fcard-title">Matching IA</div><div class="fcard-desc">Notre algorithme analyse le vibe, le budget et le style pour trouver le DJ parfait pour votre événement.</div></div>
+    <div class="fcard"><div class="fcard-icon">📋</div><div class="fcard-title">Contrats intelligents</div><div class="fcard-desc">Contrats de prestation générés par IA en quelques secondes. 10 sections légales, prêts à signer.</div></div>
+    <div class="fcard"><div class="fcard-icon">💳</div><div class="fcard-title">Paiement sécurisé</div><div class="fcard-desc">Acompte et solde via Stripe. Le DJ est payé après validation de la prestation.</div></div>
+    <div class="fcard"><div class="fcard-icon">⭐</div><div class="fcard-title">Avis vérifiés</div><div class="fcard-desc">Uniquement des avis de vrais bookings. Construisez votre réputation sur des bases solides.</div></div>
+    <div class="fcard"><div class="fcard-icon">📅</div><div class="fcard-title">Calendrier live</div><div class="fcard-desc">Gérez vos disponibilités en temps réel. Les venues voient instantanément qui est libre.</div></div>
+    <div class="fcard"><div class="fcard-icon">🛡️</div><div class="fcard-title">Profils vérifiés</div><div class="fcard-desc">Chaque DJ est vérifié par notre équipe. Identité, expérience et références contrôlées.</div></div>
+  </div>
+</section>
+
+<section id="matching" style="background:#0a0a0a">
+  <p class="stag">Intelligence Artificielle</p>
+  <h2 class="stitle">TROUVEZ LE<br/>DJ <span style="color:var(--Y)">PARFAIT.</span></h2>
+  <p class="ssub">Décrivez votre événement et laissez notre IA sélectionner les meilleurs profils pour vous.</p>
+  <div class="twoc" style="margin-top:52px">
+    <div class="ai-form">
+      <label class="aif-label">Type d'événement</label>
+      <select class="aif-select" id="evType">
+        <option>Soirée club</option><option>Mariage</option><option>Festival</option>
+        <option>Événement privé</option><option>Soirée corporate</option><option>Birthday party</option>
+      </select>
+      <label class="aif-label">Ambiance / Vibe</label>
+      <input class="aif-input" id="evVibe" placeholder="House & Techno, ambiance underground..."/>
+      <div class="aif-row">
+        <div>
+          <label class="aif-label">Budget (€)</label>
+          <select class="aif-select" id="evBudget">
+            <option>Moins de 300€</option><option>300€ - 600€</option><option>600€ - 1000€</option><option>1000€+</option>
+          </select>
+        </div>
+        <div>
+          <label class="aif-label">Ville</label>
+          <input class="aif-input" id="evCity" placeholder="Paris, Lyon..." style="margin-bottom:0"/>
+        </div>
       </div>
-      <div class="header-count">30 questions<br/>disponibles</div>
+      <label class="aif-label" style="margin-top:14px">Détails supplémentaires</label>
+      <input class="aif-input" id="evDetails" placeholder="300 personnes, ambiance festive, fin à 5h..."/>
+      <button class="brun" id="matchBtn" onclick="runMatching()">
+        <div class="spin" id="matchSpin"></div>
+        <span id="matchLabel">⚡ TROUVER DES DJs →</span>
+      </button>
     </div>
-    <div class="chat-messages" id="messages"></div>
-    <div class="chat-input-area">
-      <input class="chat-input" id="userInput" type="text" placeholder="Posez votre question..." onkeydown="if(event.key==='Enter')sendMessage()"/>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">↑</button>
+    <div id="matchResults">
+      <div class="result-placeholder">
+        <div class="result-placeholder-icon">🎧</div>
+        <div class="result-placeholder-text">Vos DJs apparaîtront ici</div>
+        <div style="font-size:12px;color:#333;text-align:center;max-width:220px;line-height:1.7">Remplissez le formulaire et lancez le matching pour voir les recommandations IA.</div>
+      </div>
     </div>
-    <div class="chat-footer">
-      <span>Powered by Claude AI</span>
-      <span class="modo-link" onclick="showModoLogin()">⚙ Admin</span>
+  </div>
+</section>
+
+<section id="contracts">
+  <p class="stag">Contrats IA</p>
+  <h2 class="stitle">UN CONTRAT<br/>EN <span style="color:var(--Y)">30 SECONDES.</span></h2>
+  <p class="ssub">Décrivez votre prestation et obtenez un contrat professionnel complet en 10 sections.</p>
+  <div class="twoc" style="margin-top:52px">
+    <div class="cgen-form">
+      <div class="aif-row">
+        <div><label class="aif-label">Nom du DJ *</label><input class="aif-input" id="cDJ" placeholder="DJ Maxime"/></div>
+        <div><label class="aif-label">Venue / Organisateur *</label><input class="aif-input" id="cVenue" placeholder="Club Le Rex"/></div>
+      </div>
+      <div class="aif-row">
+        <div><label class="aif-label">Date</label><input class="aif-input" id="cDate" type="date"/></div>
+        <div><label class="aif-label">Cachet (€)</label><input class="aif-input" id="cFee" type="number" placeholder="800"/></div>
+      </div>
+      <div class="aif-row">
+        <div><label class="aif-label">Début</label><input class="aif-input" id="cStart" type="time" value="23:00"/></div>
+        <div><label class="aif-label">Fin</label><input class="aif-input" id="cEnd" type="time" value="05:00"/></div>
+      </div>
+      <label class="aif-label">Rider technique</label>
+      <input class="aif-input" id="cRider" placeholder="2x CDJ-2000 NXS2, Pioneer DJM-900..."/>
+      <label class="aif-label">Clauses spéciales</label>
+      <input class="aif-input" id="cClauses" placeholder="Loge requise, accès -1h avant..." style="margin-bottom:0"/>
+      <button class="brun" id="contractBtn" onclick="runContract()" style="margin-top:14px">
+        <div class="spin" id="contractSpin"></div>
+        <span id="contractLabel">📋 GÉNÉRER LE CONTRAT →</span>
+      </button>
     </div>
+    <div>
+      <div class="cgen-out" id="contractOutput">
+        <div class="result-placeholder" style="height:100%">
+          <div class="result-placeholder-icon">📋</div>
+          <div class="result-placeholder-text">Votre contrat ici</div>
+          <div style="font-size:12px;color:#333;text-align:center;max-width:220px;line-height:1.7">Remplissez les informations et générez votre contrat professionnel complet.</div>
+        </div>
+      </div>
+      <div class="cgen-toolbar" id="contractToolbar" style="display:none">
+        <button class="ctool-btn copy" id="copyBtn" onclick="copyContract()">📋 Copier</button>
+        <button class="ctool-btn print" onclick="window.print()">🖨 Imprimer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" style="background:#0a0a0a">
+  <p class="stag">Tarifs</p>
+  <h2 class="stitle">SIMPLE &<br/>TRANSPARENT.</h2>
+  <p class="ssub">Payez uniquement quand vous bookez. Pas de frais cachés.</p>
+  <div class="pgrid">
+    <div class="pcard">
+      <div class="pcard-name">Starter</div>
+      <div class="pcard-price"><sup>€</sup>0<span>/mois</span></div>
+      <div class="pcard-comm">7% de commission</div>
+      <ul class="pcard-features"><li>Profil DJ complet</li><li>Accès au matching</li><li>Paiement sécurisé</li><li>Support email</li></ul>
+      <button class="pcard-btn" onclick="openAuth()">COMMENCER GRATUIT</button>
+    </div>
+    <div class="pcard featured">
+      <div class="pcard-badge">POPULAIRE</div>
+      <div class="pcard-name">Pro DJ</div>
+      <div class="pcard-price"><sup>€</sup>29<span>/mois</span></div>
+      <div class="pcard-comm">3% de commission</div>
+      <ul class="pcard-features"><li>Tout du Starter</li><li>Contrats IA illimités</li><li>Badge "Pro" sur le profil</li><li>Priorité dans le matching</li><li>Analytics avancés</li></ul>
+      <button class="pcard-btn" onclick="openAuth()">DEVENIR PRO</button>
+    </div>
+    <div class="pcard">
+      <div class="pcard-name">Business</div>
+      <div class="pcard-price"><sup>€</sup>149<span>/mois</span></div>
+      <div class="pcard-comm">0% de commission</div>
+      <ul class="pcard-features"><li>Tout du Pro</li><li>Commission 0%</li><li>Multi-utilisateurs</li><li>API access</li><li>Account manager dédié</li></ul>
+      <button class="pcard-btn" onclick="openAuth()">CONTACTER</button>
+    </div>
+  </div>
+</section>
+
+<section style="text-align:center;padding:100px 52px">
+  <p class="stag">Rejoignez CUE</p>
+  <h2 class="stitle" style="max-width:600px;margin:0 auto 24px">PRÊT À JOUER<br/>AU <span style="color:var(--Y)">PROCHAIN NIVEAU ?</span></h2>
+  <p style="font-size:15px;color:var(--MUTED);margin-bottom:36px;font-weight:300">100+ DJs déjà en conversation. Soyez parmi les premiers.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <button class="bh y" onclick="openAuthAs('dj')">🎧 Je suis DJ</button>
+    <button class="bh o" onclick="openAuthAs('venue')">🏢 Je suis Venue</button>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">
+    <svg width="42" height="42" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
+    <p>La plateforme qui connecte les DJs talentueux avec les venues qui en ont besoin.</p>
+  </div>
+  <div class="fcol"><h5>Plateforme</h5><ul><li><a href="#features">Fonctionnalités</a></li><li><a href="#matching">AI Matching</a></li><li><a href="#contracts">Contrats</a></li><li><a href="#pricing">Tarifs</a></li></ul></div>
+  <div class="fcol"><h5>Entreprise</h5><ul><li><a href="#">À propos</a></li><li><a href="#">Blog</a></li><li><a href="#">Presse</a></li><li><a href="mailto:cue.dj.app@gmail.com">Contact</a></li></ul></div>
+  <div class="fcol"><h5>Contact</h5><ul><li><a href="mailto:cue.dj.app@gmail.com">cue.dj.app@gmail.com</a></li><li><a href="tel:+33767011532">+33 7 67 01 15 32</a></li><li><a href="#">@cuedjapp</a></li></ul></div>
+</footer>
+<div class="fbot">
+  <span>© 2025 CUE. Tous droits réservés.</span>
+  <span style="cursor:pointer;color:#111" onclick="showModoLogin()">⚙</span>
+</div>
+
+</div><!-- end mainSite -->
+
+<!-- DASHBOARDS -->
+<div class="dashboard" id="dashDJ">
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,8,8,.97);border-bottom:1px solid var(--BORDER);display:flex;align-items:center;justify-content:space-between;padding:12px 52px">
+    <a href="#" onclick="goHome()" style="display:flex;align-items:center"><svg class="logo-svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></a>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="dash-user"><div class="dash-avatar" id="djAvatar">D</div><div><div class="dash-name" id="djName">DJ</div><div class="dash-role">DJ · Pro</div></div></div>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </nav>
+  <div class="dash-header"><div><div class="dash-title">MY <span>STAGE</span></div><div style="font-size:12px;color:var(--MUTED);margin-top:6px">Tableau de bord DJ · CUE Platform</div></div></div>
+  <div class="dash-grid">
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Bookings actifs</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Revenus ce mois</div></div>
+    <div class="dstat"><div class="dstat-val">—</div><div class="dstat-label">Note moyenne</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Vues profil</div></div>
+  </div>
+  <div class="dash-section">
+    <div class="dsec-title">Actions rapides</div>
+    <div class="dash-cards">
+      <div class="dcard" onclick="scrollToContract()"><div class="dcard-icon">📋</div><div class="dcard-title">Générer un contrat</div><div class="dcard-desc">Contrat IA complet en 30 secondes</div><div class="dcard-badge">IA</div></div>
+      <div class="dcard"><div class="dcard-icon">👤</div><div class="dcard-title">Mon profil</div><div class="dcard-desc">Modifier biographie, genres, photos</div></div>
+      <div class="dcard"><div class="dcard-icon">📅</div><div class="dcard-title">Mes bookings</div><div class="dcard-desc">Gérer vos confirmations et demandes</div></div>
+      <div class="dcard"><div class="dcard-icon">💰</div><div class="dcard-title">Paiements</div><div class="dcard-desc">Historique et relevés de compte</div></div>
+      <div class="dcard"><div class="dcard-icon">📊</div><div class="dcard-title">Analytics</div><div class="dcard-desc">Vues, clics et performances profil</div></div>
+      <div class="dcard"><div class="dcard-icon">⚙️</div><div class="dcard-title">Paramètres</div><div class="dcard-desc">Notifications, sécurité, abonnement</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard" id="dashVenue">
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,8,8,.97);border-bottom:1px solid var(--BORDER);display:flex;align-items:center;justify-content:space-between;padding:12px 52px">
+    <a href="#" onclick="goHome()" style="display:flex;align-items:center"><svg class="logo-svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></a>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="dash-user"><div class="dash-avatar" id="venueAvatar">V</div><div><div class="dash-name" id="venueName">Venue</div><div class="dash-role">Venue · Pro</div></div></div>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </nav>
+  <div class="dash-header"><div><div class="dash-title">MY <span>VENUE</span></div><div style="font-size:12px;color:var(--MUTED);margin-top:6px">Tableau de bord Venue · CUE Platform</div></div></div>
+  <div class="dash-grid">
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Événements actifs</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">DJs bookés</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">En attente</div></div>
+    <div class="dstat"><div class="dstat-val">—</div><div class="dstat-label">Budget utilisé</div></div>
+  </div>
+  <div class="dash-section">
+    <div class="dsec-title">Actions rapides</div>
+    <div class="dash-cards">
+      <div class="dcard" onclick="scrollToMatching()"><div class="dcard-icon">🎯</div><div class="dcard-title">Trouver un DJ</div><div class="dcard-desc">Matching IA par vibe, budget, style</div><div class="dcard-badge">IA</div></div>
+      <div class="dcard" onclick="scrollToContract()"><div class="dcard-icon">📋</div><div class="dcard-title">Générer un contrat</div><div class="dcard-desc">Contrat professionnel en 30 secondes</div><div class="dcard-badge">IA</div></div>
+      <div class="dcard"><div class="dcard-icon">📅</div><div class="dcard-title">Mes bookings</div><div class="dcard-desc">Gérer vos événements et confirmations</div></div>
+      <div class="dcard"><div class="dcard-icon">🏢</div><div class="dcard-title">Mon venue</div><div class="dcard-desc">Modifier fiche technique et équipements</div></div>
+      <div class="dcard"><div class="dcard-icon">💳</div><div class="dcard-title">Paiements</div><div class="dcard-desc">Factures et historique des transactions</div></div>
+      <div class="dcard"><div class="dcard-icon">⚙️</div><div class="dcard-title">Paramètres</div><div class="dcard-desc">Notifications, sécurité, abonnement</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHATBOT FLOTTANT -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()">💬</button>
+<div class="cwin" id="cwin">
+  <div class="chin">
+    <svg width="28" height="28" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
+    <div class="chin-info"><h4>CUE Support</h4><p>Assistant IA · FAQ intégrée ●</p></div>
+    <button class="cclose" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="cmsgs" id="cmsgs">
+    <div class="cmsg bot">Bonjour ! 👋 Je suis l'assistant CUE. Je réponds à toutes vos questions sur la plateforme. Comment puis-je vous aider ?</div>
+  </div>
+  <div class="cinrow">
+    <input class="cinput" id="cinput" placeholder="Votre question..." onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="csend" id="csend" onclick="sendChat()">↑</button>
   </div>
 </div>
 
 <script>
-// ── AUTH (API KEY) ────────────────────────────────────────
-let _apiKey = sessionStorage.getItem('cue_key') || null;
-let _keyResolve = null;
+// ══════════════════════════════════════════════════════
+// CONFIG — ⚠️ Changez cette URL avant de déployer en production
+// ══════════════════════════════════════════════════════
+const API_BASE = 'http://127.0.0.1:8001';
 
-function requireKey(){
-  if(_apiKey) return Promise.resolve(_apiKey);
-  return new Promise(res => {
-    _keyResolve = res;
-    document.getElementById('keyErr').classList.remove('on');
-    document.getElementById('keyInput').value = '';
-    document.getElementById('keyModal').classList.remove('hidden');
-    setTimeout(()=>document.getElementById('keyInput').focus(), 80);
-  });
+// ══════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════
+let currentUser = null, selectedRole = null;
+const USERS = [{email:'stanislas.kleb@outlook.com', pass:'Stan131234', roles:['dj','venue'], name:'Stanislas Kleb'}];
+
+function openAuth(){document.getElementById('authOverlay').classList.remove('hidden');}
+function openAuthAs(role){selectRole(role);openAuth();}
+function closeAuth(){document.getElementById('authOverlay').classList.add('hidden');selectedRole=null;resetAuthSteps();}
+function resetAuthSteps(){
+  document.getElementById('stepRole').style.display='block';
+  document.getElementById('stepLogin').style.display='none';
+  document.getElementById('optDJ').classList.remove('sel');
+  document.getElementById('optVenue').classList.remove('sel');
+  document.getElementById('loginErr').classList.remove('on');
+  document.getElementById('loginSpin').style.display='none';
+  document.getElementById('loginLabel').textContent='SE CONNECTER →';
 }
-function submitKey(){
-  const v = document.getElementById('keyInput').value.trim();
-  const err = document.getElementById('keyErr');
-  if(!v || !v.startsWith('sk-ant-')){
-    err.textContent = 'Clé invalide — doit commencer par sk-ant-...';
-    err.classList.add('on'); return;
+function selectRole(role){
+  selectedRole=role;
+  document.getElementById('optDJ').classList.toggle('sel',role==='dj');
+  document.getElementById('optVenue').classList.toggle('sel',role==='venue');
+  document.getElementById('roleTag').textContent=role==='dj'?'🎧 Connexion DJ':'🏢 Connexion Venue';
+  document.getElementById('stepRole').style.display='none';
+  document.getElementById('stepLogin').style.display='block';
+  setTimeout(()=>document.getElementById('loginEmail').focus(),80);
+}
+function backToRole(){
+  document.getElementById('stepRole').style.display='block';
+  document.getElementById('stepLogin').style.display='none';
+}
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPassword').value;
+  const user=USERS.find(u=>u.email===email&&u.pass===pass&&u.roles.includes(selectedRole));
+  if(!user){document.getElementById('loginErr').classList.add('on');return;}
+  currentUser=user;
+  document.getElementById('authOverlay').classList.add('hidden');
+  resetAuthSteps();
+  if(selectedRole==='dj'){
+    document.getElementById('dashDJ').classList.add('active');
+    document.getElementById('mainSite').style.display='none';
+    document.getElementById('djName').textContent=user.name;
+    document.getElementById('djAvatar').textContent=user.name[0].toUpperCase();
+  } else {
+    document.getElementById('dashVenue').classList.add('active');
+    document.getElementById('mainSite').style.display='none';
+    document.getElementById('venueName').textContent=user.name;
+    document.getElementById('venueAvatar').textContent=user.name[0].toUpperCase();
   }
-  _apiKey = v; sessionStorage.setItem('cue_key', v);
-  document.getElementById('keyModal').classList.add('hidden');
-  if(_keyResolve){ _keyResolve(_apiKey); _keyResolve = null; }
+  document.getElementById('navCta').innerHTML=`<button class="logout-btn" onclick="logout()">Déconnexion</button>`;
+  window.scrollTo(0,0);
 }
-function cancelKey(){
-  document.getElementById('keyModal').classList.add('hidden');
-  if(_keyResolve){ _keyResolve(null); _keyResolve = null; }
+function logout(){
+  currentUser=null;selectedRole=null;
+  document.getElementById('dashDJ').classList.remove('active');
+  document.getElementById('dashVenue').classList.remove('active');
+  document.getElementById('mainSite').style.display='block';
+  document.getElementById('navCta').innerHTML=`<button class="bg" onclick="openAuth()">Connexion</button><button class="bp" onclick="openAuth()">Rejoindre CUE</button>`;
+  window.scrollTo(0,0);
 }
-function clearKey(){
-  _apiKey = null; sessionStorage.removeItem('cue_key');
-  document.getElementById('keyInput').value = '';
-  document.getElementById('keyErr').textContent = 'Clé effacée. Entrez-en une nouvelle.';
-  document.getElementById('keyErr').classList.add('on');
+function goHome(){
+  document.getElementById('dashDJ').classList.remove('active');
+  document.getElementById('dashVenue').classList.remove('active');
+  document.getElementById('mainSite').style.display='block';
+  window.scrollTo(0,0);
+}
+function scrollToMatching(){goHome();setTimeout(()=>document.getElementById('matching').scrollIntoView({behavior:'smooth'}),100);}
+function scrollToContract(){goHome();setTimeout(()=>document.getElementById('contracts').scrollIntoView({behavior:'smooth'}),100);}
+
+// ══════════════════════════════════════════════════════
+// NAV SCROLL
+// ══════════════════════════════════════════════════════
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('s',scrollY>50));
+
+// ══════════════════════════════════════════════════════
+// AI MATCHING — FIX: code orphelin supprimé, une seule fonction propre
+// ══════════════════════════════════════════════════════
+async function runMatching(){
+  const btn=document.getElementById('matchBtn');
+  const spin=document.getElementById('matchSpin');
+  const lab=document.getElementById('matchLabel');
+  const out=document.getElementById('matchResults');
+
+  btn.disabled=true;
+  spin.classList.add('on');
+  lab.textContent='Recherche en cours...';
+  out.innerHTML='<div class="result-placeholder"><div class="result-placeholder-icon pulsing">🎧</div><div class="result-placeholder-text pulsing">Analyse en cours...</div></div>';
+
+  const payload={
+    type:document.getElementById('evType').value,
+    vibe:document.getElementById('evVibe').value||'Non précisé',
+    budget:document.getElementById('evBudget').value,
+    city:document.getElementById('evCity').value||'Non précisée',
+    details:document.getElementById('evDetails').value||'Aucun'
+  };
+
+  try{
+    const res=await fetch(`${API_BASE}/match`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.detail||'Erreur serveur');
+    const djs=data.djs;
+    out.innerHTML='<div class="dj-results">'+djs.map(d=>`
+      <div class="dj-card">
+        <div class="dj-avatar">${d.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <div style="flex:1">
+          <div class="dj-name">${d.name}</div>
+          <div class="dj-tags">${d.tags.map(t=>`<span class="dj-tag y">${t}</span>`).join('')}<span class="dj-tag">${d.price}</span></div>
+          <div class="dj-desc">${d.bio}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="dj-match">${d.match}%</div>
+          <div class="dj-match-label">Match</div>
+          <button class="bp" style="margin-top:10px;padding:6px 14px;font-size:11px" onclick="openAuth()">BOOKER</button>
+        </div>
+      </div>`).join('')+'</div>';
+  }catch(e){
+    out.innerHTML=`<div class="result-placeholder"><div class="result-placeholder-text" style="color:#ff4444;opacity:1">❌ ${e.message}</div></div>`;
+  }
+  btn.disabled=false;
+  spin.classList.remove('on');
+  lab.textContent='⚡ TROUVER DES DJs →';
 }
 
-// ── MODERATOR AUTH ────────────────────────────────────────
-const MODO_CREDS = { email:'stanislas.kleb@outlook.com', pass:'Stan131234' };
-let modoLoggedIn = false;
+// ══════════════════════════════════════════════════════
+// CONTRACT GENERATOR — FIX: code orphelin supprimé, une seule fonction propre
+// ══════════════════════════════════════════════════════
+let contractText='';
+async function runContract(){
+  const dj=document.getElementById('cDJ').value.trim();
+  const venue=document.getElementById('cVenue').value.trim();
+  if(!dj||!venue){alert('Le nom du DJ et du Venue sont requis.');return;}
 
-function showChat(){ setView('viewChat'); }
-function showModoLogin(){ setView('viewModoLogin'); document.getElementById('modoEmail').focus(); }
+  const btn=document.getElementById('contractBtn');
+  const spin=document.getElementById('contractSpin');
+  const lab=document.getElementById('contractLabel');
+  const out=document.getElementById('contractOutput');
+  const toolbar=document.getElementById('contractToolbar');
 
+  btn.disabled=true;
+  spin.classList.add('on');
+  lab.textContent='Génération...';
+  toolbar.style.display='none';
+  out.innerHTML='<div style="text-align:center;padding:40px;color:var(--MUTED)" class="pulsing">⚡ Génération du contrat en cours...</div>';
+
+  const payload={
+    dj,
+    venue,
+    date:document.getElementById('cDate').value,
+    start:document.getElementById('cStart').value,
+    end:document.getElementById('cEnd').value,
+    fee:parseFloat(document.getElementById('cFee').value)||0,
+    rider:document.getElementById('cRider').value,
+    clauses:document.getElementById('cClauses').value
+  };
+
+  try{
+    const res=await fetch(`${API_BASE}/contract`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.detail||'Erreur serveur');
+
+    contractText=data.contract_text;
+    const text=contractText;
+
+    let html='<div style="text-align:center;margin-bottom:28px"><div style="font-family:var(--D);font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:1px">CONTRAT DE PRESTATION DJ</div><div style="font-size:10px;color:var(--MUTED);letter-spacing:2px;text-transform:uppercase;margin-top:6px">CUE Platform · '+new Date().toLocaleDateString('fr-FR')+'</div></div>';
+    const re=/###SECTION_\d+:\s*([^#]+)###([\s\S]*?)(?=###SECTION_|\s*$)/g;
+    let m,found=false;
+    while((m=re.exec(text))!==null){
+      found=true;
+      html+=`<div class="contract-section" style="margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div class="section-title">${m[1].trim()}</div>
+        <p>${m[2].trim().replace(/\n/g,'<br>')}</p>
+      </div>`;
+    }
+    if(!found) html+=`<p>${text.replace(/\n/g,'<br>')}</p>`;
+    out.innerHTML=html;
+    toolbar.style.display='flex';
+  }catch(e){
+    out.innerHTML=`<div style="padding:20px;color:#ff4444">❌ ${e.message}</div>`;
+  }
+  btn.disabled=false;
+  spin.classList.remove('on');
+  lab.textContent='📋 GÉNÉRER LE CONTRAT →';
+}
+
+function copyContract(){
+  navigator.clipboard?.writeText(contractText);
+  const btn=document.getElementById('copyBtn');
+  btn.textContent='✓ Copié !';btn.style.color='#00c864';
+  setTimeout(()=>{btn.textContent='📋 Copier';btn.style.color='';},2000);
+}
+
+// ══════════════════════════════════════════════════════
+// CHATBOT
+// ══════════════════════════════════════════════════════
+let chatOpen=false,chatHist=[];
+
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('cwin').classList.toggle('open',chatOpen);
+  if(chatOpen)document.getElementById('cinput').focus();
+}
+function addCMsg(t,r){
+  const e=document.createElement('div');e.className='cmsg '+r;
+  if(r==='bot')e.style.whiteSpace='pre-line';
+  e.textContent=t;
+  const m=document.getElementById('cmsgs');m.appendChild(e);m.scrollTop=m.scrollHeight;
+  return e;
+}
+function addTyping(){
+  const e=document.createElement('div');e.className='cmsg typing';e.id='ctyp';
+  e.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  const m=document.getElementById('cmsgs');m.appendChild(e);m.scrollTop=m.scrollHeight;
+}
+function rmTyping(){document.getElementById('ctyp')?.remove();}
+
+async function sendChat(){
+  const i=document.getElementById('cinput');
+  const msg=i.value.trim();
+  if(!msg)return;
+  i.value='';
+  document.getElementById('csend').disabled=true;
+  addCMsg(msg,'user');
+  chatHist.push({role:'user',content:msg});
+  addTyping();
+  try{
+    const res=await fetch(`${API_BASE}/chat`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:msg})
+    });
+    const d=await res.json();
+    if(!res.ok) throw new Error(d.detail||`Erreur ${res.status}`);
+    const rep=d.reply||'Désolé, une erreur est survenue.';
+    rmTyping();
+    addCMsg(rep,'bot');
+    chatHist.push({role:'assistant',content:rep});
+  }catch(e){
+    rmTyping();
+    addCMsg(`❌ ${e.message}`,'bot');
+  }
+  document.getElementById('csend').disabled=false;
+  i.focus();
+}
+
+// ══════════════════════════════════════════════════════
+// MODERATOR
+// ══════════════════════════════════════════════════════
+let FAQ_DATA=[
+  {q:"Je ne parviens pas à me connecter",r:"Vérifiez votre email et mot de passe. Utilisez « Mot de passe oublié » si nécessaire."},
+  {q:"Je n'ai pas reçu l'email de validation",r:"Vérifiez vos courriers indésirables. Renvoyez l'email depuis la page de connexion."},
+  {q:"Comment réinitialiser mon mot de passe ?",r:"Cliquez sur « Mot de passe oublié », entrez votre email et suivez les instructions."},
+  {q:"Comment modifier mes informations personnelles ?",r:"Profil → Paramètres → Modifier les informations."},
+  {q:"Comment supprimer mon compte ?",r:"Paramètres → Confidentialité → Supprimer mon compte."},
+  {q:"Pourquoi vérifier mon identité ?",r:"La vérification sécurise les transactions et assure la fiabilité des utilisateurs."},
+  {q:"Combien de temps prend la vérification ?",r:"Quelques minutes en général. Un contrôle manuel peut parfois prolonger le délai."},
+  {q:"Ma vérification est refusée, que faire ?",r:"Vérifiez la qualité et validité de vos documents, puis soumettez à nouveau."},
+  {q:"Mes données sont-elles sécurisées ?",r:"Oui. CUE chiffre toutes les données sensibles et applique des standards de sécurité élevés."},
+  {q:"Comment signaler un comportement suspect ?",r:"Bouton « Signaler » sur le profil ou dans le booking concerné."},
+  {q:"Comment optimiser mon profil DJ ?",r:"Ajoutez biographie, genres musicaux, références, extraits audio et disponibilités."},
+  {q:"Puis-je sélectionner plusieurs styles musicaux ?",r:"Oui, assurez-vous qu'ils correspondent à votre univers artistique."},
+  {q:"Comment augmenter mes chances d'être sélectionné ?",r:"Profil complet, avis positifs, et respect de vos engagements."},
+  {q:"Mon profil est en attente de validation",r:"Une vérification qualité est en cours. Cela prend généralement quelques minutes."},
+  {q:"Comment gérer mes disponibilités ?",r:"Tableau de bord → section Calendrier → mettez à jour vos dates."},
+  {q:"Comment créer un profil venue ?",r:"Sélectionnez « Venue » à l'inscription, complétez : localisation, capacité, styles et fiche technique."},
+  {q:"Comment préciser les équipements disponibles ?",r:"Dans la fiche technique : audio, DJ booth, éclairage et contraintes horaires."},
+  {q:"Comment publier une date à pourvoir ?",r:"« Créer un événement » → date, budget, styles, conditions."},
+  {q:"Comment sélectionner un DJ ?",r:"Consultez les profils, écoutez les extraits, vérifiez les avis, confirmez via la plateforme."},
+  {q:"Puis-je modifier un événement publié ?",r:"Oui, tant qu'il n'est pas confirmé par un DJ."},
+  {q:"Comment fonctionne un booking sur CUE ?",r:"Demande → Acceptation → Paiement sécurisé → Confirmation → Événement → Validation → Évaluation."},
+  {q:"Puis-je modifier un booking confirmé ?",r:"Oui, mais les modifications doivent être validées par les deux parties."},
+  {q:"Que faire en cas de no-show ?",r:"Signalez immédiatement depuis le booking pour ouverture d'un dossier."},
+  {q:"Comment contacter l'autre partie ?",r:"Via le chat intégré CUE uniquement, pour conserver une trace officielle."},
+  {q:"Puis-je annuler un booking ?",r:"Oui, selon les conditions d'annulation définies à la confirmation."},
+  {q:"Comment les paiements sont-ils sécurisés ?",r:"Via Stripe, avec sécurisation complète des transactions."},
+  {q:"Quand le DJ reçoit-il son paiement ?",r:"Après validation de l'événement (modèle acompte + solde)."},
+  {q:"Que faire si mon paiement est refusé ?",r:"Vérifiez votre carte et les autorisations bancaires (3D Secure)."},
+  {q:"Quelle commission CUE applique-t-elle ?",r:"Starter : gratuit 7%. Pro DJ : 29€/mois 3%. Business : 149€/mois 0%."},
+  {q:"Comment télécharger une facture ?",r:"Onglet Transactions → sélectionnez la transaction → téléchargez le justificatif."},
+];
+
+function showModoLogin(){document.getElementById('modoLoginWrap').classList.remove('hidden');}
+function hideModoLogin(){document.getElementById('modoLoginWrap').classList.add('hidden');}
 function modoLogin(){
-  const email = document.getElementById('modoEmail').value.trim().toLowerCase();
-  const pass  = document.getElementById('modoPass').value;
-  const err   = document.getElementById('modoErr');
-  err.style.display = 'none';
-  if(email !== MODO_CREDS.email || pass !== MODO_CREDS.pass){
-    err.style.display = 'block'; return;
-  }
-  modoLoggedIn = true;
-  document.getElementById('loginTime').textContent = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  setView('viewModo');
-  initModo();
+  const email=document.getElementById('modoEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('modoPass').value;
+  const err=document.getElementById('modoErr');err.style.display='none';
+  if(email!=='stanislas.kleb@outlook.com'||pass!=='Stan131234'){err.style.display='block';return;}
+  hideModoLogin();
+  document.getElementById('modoDash').classList.add('open');
+  renderFAQEditor();
 }
-
-function modoLogout(){
-  modoLoggedIn = false;
-  document.getElementById('modoEmail').value = '';
-  document.getElementById('modoPass').value = '';
-  setView('viewChat');
+function modoLogout(){document.getElementById('modoDash').classList.remove('open');}
+function switchMTab(el,sec){
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.msec').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(sec).classList.add('active');
 }
-
-function setView(id){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-// ── MODERATOR DASHBOARD ───────────────────────────────────
-const TABS = ['overview','users','logs','faq','reports','settings'];
-
-function switchTab(tab){
-  TABS.forEach(t=>{
-    document.getElementById('sec-'+t).classList.toggle('active', t===tab);
-  });
-  document.querySelectorAll('.modo-tab').forEach((el,i)=>{
-    el.classList.toggle('active', TABS[i]===tab);
-  });
-}
-
-// ── FAQ DATA ──────────────────────────────────────────────
-let FAQ = [
-  {q:"Je ne parviens pas à me connecter",            r:"Vérifiez votre email et mot de passe. Utilisez « Mot de passe oublié » si nécessaire. Si le problème persiste, contactez cue.dj.app@gmail.com."},
-  {q:"Je n'ai pas reçu l'email de validation",       r:"Vérifiez vos courriers indésirables. Vous pouvez renvoyer l'email depuis la page de connexion."},
-  {q:"Comment réinitialiser mon mot de passe ?",     r:"Cliquez sur « Mot de passe oublié », entrez votre email et suivez les instructions."},
-  {q:"Comment modifier mes informations personnelles ?", r:"Profil → Paramètres → Modifier les informations."},
-  {q:"Comment supprimer mon compte ?",               r:"Paramètres → Confidentialité → Supprimer mon compte."},
-  {q:"Pourquoi vérifier mon identité ?",             r:"La vérification sécurise les transactions et assure la fiabilité des utilisateurs."},
-  {q:"Combien de temps prend la vérification ?",     r:"Quelques minutes en général. Un contrôle manuel peut parfois prolonger le délai."},
-  {q:"Ma vérification est refusée, que faire ?",     r:"Vérifiez la qualité et validité de vos documents, puis soumettez à nouveau."},
-  {q:"Mes données sont-elles sécurisées ?",          r:"Oui. CUE chiffre toutes les données sensibles et applique des standards de sécurité élevés."},
-  {q:"Comment signaler un comportement suspect ?",   r:"Bouton « Signaler » sur le profil ou dans le booking concerné."},
-  {q:"Comment optimiser mon profil DJ ?",            r:"Ajoutez biographie, genres musicaux, références, extraits audio et disponibilités."},
-  {q:"Puis-je sélectionner plusieurs styles musicaux ?", r:"Oui, assurez-vous qu'ils correspondent à votre univers artistique."},
-  {q:"Comment augmenter mes chances d'être sélectionné ?", r:"Profil complet, avis positifs, et respect de vos engagements."},
-  {q:"Mon profil est en attente de validation",      r:"Une vérification qualité est en cours. Cela prend généralement quelques minutes."},
-  {q:"Comment gérer mes disponibilités ?",           r:"Tableau de bord → section Calendrier → mettez à jour vos dates."},
-  {q:"Comment créer un profil venue ?",              r:"Sélectionnez « Venue » à l'inscription, complétez : localisation, capacité, styles et fiche technique."},
-  {q:"Comment préciser les équipements disponibles ?", r:"Dans la fiche technique : audio, DJ booth, éclairage et contraintes horaires."},
-  {q:"Comment publier une date à pourvoir ?",        r:"« Créer un événement » → date, budget, styles, conditions."},
-  {q:"Comment sélectionner un DJ ?",                 r:"Consultez les profils, écoutez les extraits, vérifiez les avis, confirmez via la plateforme."},
-  {q:"Puis-je modifier un événement publié ?",       r:"Oui, tant qu'il n'est pas confirmé par un DJ."},
-  {q:"Comment fonctionne un booking sur CUE ?",      r:"Demande → Acceptation → Paiement sécurisé → Confirmation → Événement → Validation → Évaluation."},
-  {q:"Puis-je modifier un booking confirmé ?",       r:"Oui, mais les modifications doivent être validées par les deux parties."},
-  {q:"Que faire en cas de no-show ?",                r:"Signalez immédiatement depuis le booking pour ouverture d'un dossier."},
-  {q:"Comment contacter l'autre partie ?",           r:"Via le chat intégré CUE uniquement, pour conserver une trace officielle."},
-  {q:"Puis-je annuler un booking ?",                 r:"Oui, selon les conditions d'annulation définies à la confirmation."},
-  {q:"Comment les paiements sont-ils sécurisés ?",   r:"Via Stripe, avec sécurisation complète des transactions."},
-  {q:"Quand le DJ reçoit-il son paiement ?",         r:"Après validation de l'événement (modèle acompte + solde)."},
-  {q:"Que faire si mon paiement est refusé ?",       r:"Vérifiez votre carte et les autorisations bancaires (3D Secure)."},
-  {q:"Quelle commission CUE applique-t-elle ?",      r:"Starter : gratuit, 7% commission. Pro DJ : 29€/mois, 3%. Business : 149€/mois, 0%."},
-  {q:"Comment télécharger une facture ?",            r:"Onglet Transactions → sélectionnez la transaction → téléchargez le justificatif."},
-];
-
-// ── MOCK USERS ────────────────────────────────────────────
-const USERS = [
-  {name:"Lorenzo Benzaquem", email:"lorenzo@example.com", type:"dj",    status:"active",  date:"01/03/2025"},
-  {name:"Club Le Rex",        email:"rex@example.com",    type:"venue",  status:"active",  date:"15/02/2025"},
-  {name:"DJ Maxime",          email:"maxime@example.com", type:"dj",    status:"pending", date:"08/03/2025"},
-  {name:"Virginia K.",        email:"virginia@example.com",type:"dj",   status:"active",  date:"22/01/2025"},
-  {name:"Sunset Rooftop",     email:"sunset@example.com", type:"venue", status:"pending", date:"07/03/2025"},
-];
-let usersFiltered = [...USERS];
-
-function initModo(){
-  // Stats
-  document.getElementById('stat-users').textContent = USERS.length;
-  document.getElementById('stat-convos').textContent = 7;
-  document.getElementById('stat-reports').textContent = 1;
-  renderUsers();
-  renderFAQ();
-}
-
-function renderUsers(){
-  const search = (document.getElementById('userSearch')?.value || '').toLowerCase();
-  const filter = document.getElementById('userFilter')?.value || '';
-  const filtered = USERS.filter(u=>{
-    const matchSearch = !search || u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search);
-    const matchFilter = !filter || u.type === filter || u.status === filter;
-    return matchSearch && matchFilter;
-  });
-  const tbody = document.getElementById('usersTable');
-  if(!filtered.length){
-    tbody.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:#333">Aucun utilisateur trouvé</div>';
-    return;
-  }
-  tbody.innerHTML = filtered.map(u=>`
-    <div class="table-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr">
-      <span class="name">${u.name}<br><span style="font-size:10px;color:#333;font-weight:400">${u.email}</span></span>
-      <span><span class="badge ${u.type}">${u.type==='dj'?'DJ':'Venue'}</span></span>
-      <span><span class="badge ${u.status}">${u.status==='active'?'Actif':'En attente'}</span></span>
-      <span>${u.date}</span>
-      <span style="gap:6px">
-        <button class="act-btn warn">Avert.</button>
-        <button class="act-btn ban">Suspendre</button>
-      </span>
-    </div>`).join('');
-}
-
-function filterUsers(){ renderUsers(); }
-
-function renderFAQ(){
-  const container = document.getElementById('faqEditor');
-  container.innerHTML = FAQ.map((f,i)=>`
+function renderFAQEditor(){
+  const c=document.getElementById('faqEditorContainer');
+  c.innerHTML=FAQ_DATA.map((f,i)=>`
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFAQ(${i})">
-        <span>
-          <span class="faq-q-num">${String(i+1).padStart(2,'0')}.</span>
-          <span class="faq-q-text">${f.q}</span>
-        </span>
-        <span style="color:#333;font-size:18px" id="faq-arrow-${i}">›</span>
+      <div class="faq-q" onclick="toggleFaqItem(${i})">
+        <span><span class="faq-q-num">${String(i+1).padStart(2,'0')}.</span><span class="faq-q-text">${f.q}</span></span>
+        <span id="faq-arr-${i}" style="color:#333;font-size:16px">›</span>
       </div>
       <div class="faq-body" id="faq-body-${i}">
         <textarea class="faq-answer" id="faq-ans-${i}" rows="3">${f.r}</textarea>
         <div style="display:flex;align-items:center">
-          <button class="faq-save" onclick="saveFAQ(${i})">Enregistrer</button>
+          <button class="faq-save" onclick="saveFaqItem(${i})">Enregistrer</button>
           <span class="save-ok" id="faq-ok-${i}">✓ Sauvegardé</span>
         </div>
       </div>
     </div>`).join('');
 }
-
-function toggleFAQ(i){
-  const body = document.getElementById('faq-body-'+i);
-  const arrow = document.getElementById('faq-arrow-'+i);
-  const open = body.classList.toggle('open');
-  arrow.textContent = open ? '˅' : '›';
-  arrow.style.color = open ? '#FFC300' : '#333';
+function toggleFaqItem(i){
+  const b=document.getElementById('faq-body-'+i);
+  const a=document.getElementById('faq-arr-'+i);
+  const open=b.classList.toggle('open');
+  a.textContent=open?'˅':'›';a.style.color=open?'#FFC300':'#333';
 }
-
-function saveFAQ(i){
-  const val = document.getElementById('faq-ans-'+i).value.trim();
-  if(!val) return;
-  FAQ[i].r = val;
-  const ok = document.getElementById('faq-ok-'+i);
-  ok.style.display = 'inline';
-  setTimeout(()=>ok.style.display='none', 2000);
+function saveFaqItem(i){
+  const v=document.getElementById('faq-ans-'+i).value.trim();
+  if(!v)return;FAQ_DATA[i].r=v;
+  const ok=document.getElementById('faq-ok-'+i);
+  ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);
 }
-
-// ── CHATBOT SYSTEM PROMPT (uses FAQ array, always up to date) ──
-function buildSystem(){
-  return `Tu es l'assistant support officiel de CUE, une plateforme de booking DJ/venue (find, book, pay, review).
-
-Réponds dans la langue de l'utilisateur (français ou anglais). Sois chaleureux, direct et précis. 1-3 phrases max.
-
-=== FAQ CUE ===
-${FAQ.map(f=>`Q: ${f.q}\nR: ${f.r}`).join('\n\n')}
-=== FIN FAQ ===
-
-TARIFS : Starter gratuit 7% | Pro DJ 29€/mois 3% | Business 149€/mois 0%
-CONTACT : cue.dj.app@gmail.com | +33 7 67 01 15 32 | @cuedjapp
-Si hors FAQ, donne ta meilleure réponse et propose d'escalader vers le support humain.`;
-}
-
-// ── CHATBOT LOGIC ─────────────────────────────────────────
-const SUGGESTIONS = [
-  "Comment fonctionne un booking ?",
-  "Quels sont vos tarifs ?",
-  "Comment optimiser mon profil DJ ?",
-  "Paiement refusé, que faire ?",
-];
-let history = [];
-
-function logoSVG(s){
-  return `<svg width="${s}" height="${s}" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>`;
-}
-function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
-
-function addMsg(role, text){
-  const c = document.getElementById('messages');
-  const d = document.createElement('div');
-  d.className = `msg ${role}`;
-  d.innerHTML = role==='bot'
-    ? `<div class="bot-avatar">${logoSVG(22)}</div><div class="bubble bot">${esc(text)}</div>`
-    : `<div class="bubble user">${esc(text)}</div>`;
-  c.appendChild(d); c.scrollTop = c.scrollHeight;
-}
-function addTyping(){
-  const c = document.getElementById('messages');
-  const d = document.createElement('div');
-  d.className='msg bot'; d.id='typing';
-  d.innerHTML=`<div class="bot-avatar">${logoSVG(22)}</div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-  c.appendChild(d); c.scrollTop=c.scrollHeight;
-}
-function removeTyping(){ document.getElementById('typing')?.remove(); }
-
-function showSuggestions(){
-  const c = document.getElementById('messages');
-  const d = document.createElement('div');
-  d.className='suggestions'; d.id='suggBlock';
-  d.innerHTML=`<div class="sugg-label">Questions fréquentes</div><div class="sugg-list">
-    ${SUGGESTIONS.map(s=>`<button class="sugg-btn" onclick="sendMessage('${s.replace(/'/g,"\\'")}')"> ${s}</button>`).join('')}
-  </div>`;
-  c.appendChild(d); c.scrollTop=c.scrollHeight;
-}
-
-async function sendMessage(preset){
-  const input = document.getElementById('userInput');
-  const btn = document.getElementById('sendBtn');
-  const text = preset || input.value.trim();
-  if(!text) return;
-  document.getElementById('suggBlock')?.remove();
-  input.value=''; btn.disabled=true;
-  addMsg('user', text);
-  history.push({role:'user', content:text});
-  const key = await requireKey();
-  if(!key){ btn.disabled=false; return; }
-  addTyping();
-  try{
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':key,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true',
-      },
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:buildSystem(),messages:history}),
-    });
-    const data = await res.json();
-    if(!res.ok){
-      if(res.status===401){_apiKey=null;sessionStorage.removeItem('cue_key');}
-      throw new Error(data.error?.message||`Erreur ${res.status}`);
-    }
-    const reply = data.content?.[0]?.text||'Désolé, une erreur est survenue.';
-    removeTyping(); addMsg('bot', reply);
-    history.push({role:'assistant', content:reply});
-  }catch(e){
-    removeTyping();
-    addMsg('bot',`❌ ${e.message}\n\nContactez-nous : cue.dj.app@gmail.com`);
-  }
-  btn.disabled=false; document.getElementById('userInput').focus();
-}
-
-// ── INIT ─────────────────────────────────────────────────
-window.onload = function(){
-  if(_apiKey) document.getElementById('keyModal').classList.add('hidden');
-  addMsg('bot','Bonjour ! 👋 Je suis l\'assistant CUE.\nJe réponds à toutes vos questions sur la plateforme — bookings, paiements, profils DJ/Venue, et plus.\n\nComment puis-je vous aider ?');
-  showSuggestions();
-};
 </script>
 </body>
 </html>
