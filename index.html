@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CUE — Support</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#080808;font-family:'Barlow','Helvetica Neue',sans-serif;}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
+
+/* ── VIEWS ── */
+.view{display:none}
+.view.active{display:flex}
+
+/* ── CHATBOT VIEW ── */
+#viewChat{min-height:100vh;align-items:center;justify-content:center;padding:20px}
+.chat-wrap{
+  width:100%;max-width:480px;background:#111;
+  border:1px solid rgba(255,195,0,.18);
+  display:flex;flex-direction:column;
+  height:min(680px,92vh);
+  box-shadow:0 32px 80px rgba(0,0,0,.8);overflow:hidden;
+}
+.chat-header{
+  padding:16px 20px;border-bottom:1px solid rgba(255,195,0,.12);
+  background:#0a0a0a;display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+.header-info h2{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;
+  text-transform:uppercase;letter-spacing:1px;color:#fff;
+}
+.header-status{font-size:10px;color:#FFC300;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;display:flex;align-items:center;gap:5px}
+.dot-green{width:6px;height:6px;border-radius:50%;background:#00c864;display:inline-block}
+.header-count{font-size:9px;color:#333;margin-left:auto;text-align:right;line-height:1.5}
+.chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;align-items:flex-end;gap:8px;animation:slideIn .25s ease forwards}
+.msg.user{justify-content:flex-end}.msg.bot{justify-content:flex-start}
+.bubble{max-width:80%;padding:9px 13px;font-size:13px;line-height:1.65;white-space:pre-line}
+.bubble.user{background:#FFC300;color:#000;font-weight:600}
+.bubble.bot{background:#191919;color:#ddd;border:1px solid rgba(255,255,255,.06)}
+.bot-avatar{flex-shrink:0;margin-bottom:2px}
+.typing-dots{display:flex;gap:4px;align-items:center;padding:12px 14px}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:#444;animation:bounce 1.2s ease-in-out infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
+.suggestions{margin-top:8px;padding-left:30px}
+.sugg-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.sugg-list{display:flex;flex-wrap:wrap;gap:6px}
+.sugg-btn{padding:6px 12px;background:transparent;border:1px solid rgba(255,195,0,.2);color:#888;font-size:11px;font-family:inherit;cursor:pointer;transition:all .2s}
+.sugg-btn:hover{background:rgba(255,195,0,.1);border-color:#FFC300;color:#FFC300;transform:translateY(-1px)}
+.chat-input-area{border-top:1px solid rgba(255,195,0,.1);padding:12px;background:#0a0a0a;display:flex;gap:8px;flex-shrink:0}
+.chat-input{flex:1;background:#000;border:1px solid rgba(255,255,255,.08);padding:10px 14px;color:#fff;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.chat-input:focus{border-color:#FFC300}.chat-input::placeholder{color:#333}
+.send-btn{width:40px;height:40px;background:#FFC300;border:none;cursor:pointer;font-size:16px;color:#000;font-weight:700;transition:background .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.send-btn:hover{background:#FFD740}.send-btn:disabled{opacity:.4;cursor:not-allowed}
+.chat-footer{padding:7px 16px;background:#0a0a0a;border-top:1px solid rgba(255,255,255,.03);display:flex;justify-content:space-between;align-items:center}
+.chat-footer span{font-size:9px;color:#222;text-transform:uppercase;letter-spacing:1.5px}
+.modo-link{font-size:9px;color:#1a1a1a;text-decoration:none;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:color .2s}
+.modo-link:hover{color:#444}
+
+/* ── MODALS (API KEY + AUTH) ── */
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:20px}
+.modal-wrap.hidden{display:none}
+.modal{background:#111;border:1px solid #FFC300;padding:36px 32px;width:100%;max-width:440px}
+.modal-logo{display:block;margin:0 auto 16px}
+.modal h3{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#fff;text-align:center;margin-bottom:6px}
+.modal-sub{font-size:12px;color:#555;text-align:center;margin-bottom:22px;line-height:1.6}
+.modal-sub a{color:#FFC300;text-decoration:none}
+.m-input{width:100%;background:#000;border:1px solid rgba(255,195,0,.2);padding:12px 14px;color:#fff;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s;margin-bottom:10px}
+.m-input:focus{border-color:#FFC300}.m-input::placeholder{color:#333}
+.m-input.mono{font-family:monospace;letter-spacing:.5px}
+.m-err{font-size:11px;color:#ff4444;text-align:center;padding:6px 10px;background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.2);margin-bottom:12px;display:none}
+.m-err.on{display:block}
+.modal-btns{display:flex;gap:10px}
+.btn-cancel{padding:12px 18px;background:transparent;border:1px solid rgba(255,255,255,.1);color:#555;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .2s}
+.btn-cancel:hover{border-color:#555;color:#888}
+.btn-primary{flex:1;padding:12px;background:#FFC300;border:none;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:#FFD740}
+.modal-note{font-size:10px;color:#333;text-align:center;margin-top:14px;line-height:1.6}
+.modal-note span{color:#FFC300;cursor:pointer;text-decoration:underline}
+
+/* ── MODERATOR LOGIN VIEW ── */
+#viewModoLogin{min-height:100vh;align-items:center;justify-content:center;padding:20px;flex-direction:column}
+.modo-login-box{width:100%;max-width:400px;background:#111;border:1px solid rgba(255,195,0,.3);padding:44px 36px}
+.modo-login-box h2{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;text-align:center;margin-bottom:4px;letter-spacing:.5px}
+.modo-login-box p{font-size:11px;color:#444;text-align:center;margin-bottom:28px;letter-spacing:1px;text-transform:uppercase}
+.modo-login-box label{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px}
+
+/* ── MODERATOR DASHBOARD VIEW ── */
+#viewModo{min-height:100vh;flex-direction:column;background:#080808}
+.modo-nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:#0a0a0a;border-bottom:1px solid rgba(255,195,0,.12);
+  padding:0 36px;height:60px;
+  display:flex;align-items:center;gap:0;
+}
+.modo-nav-brand{display:flex;align-items:center;gap:10px;margin-right:40px}
+.modo-nav-brand span{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff}
+.modo-nav-brand em{font-style:normal;font-size:9px;background:#FFC300;color:#000;padding:2px 7px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:4px}
+.modo-tab{padding:0 18px;height:60px;display:flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.modo-tab:hover{color:#888}.modo-tab.active{color:#FFC300;border-bottom-color:#FFC300}
+.modo-logout{margin-left:auto;padding:7px 16px;border:1px solid rgba(255,255,255,.08);background:transparent;color:#444;font-family:inherit;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.modo-logout:hover{border-color:#ff4444;color:#ff4444}
+
+.modo-body{margin-top:60px;padding:36px;flex:1}
+.modo-section{display:none}.modo-section.active{display:block}
+
+/* stat cards */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px}
+.stat-card{background:#111;border:1px solid rgba(255,195,0,.1);padding:22px 20px}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;color:#FFC300;line-height:1}
+.stat-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+
+/* section titles */
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:6px;letter-spacing:.5px}
+.sec-sub{font-size:12px;color:#444;margin-bottom:20px}
+
+/* tables */
+.table-wrap{background:#111;border:1px solid rgba(255,195,0,.1);overflow:hidden;margin-bottom:24px}
+.table-hdr{display:grid;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.04);background:#0a0a0a}
+.table-hdr span{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444}
+.table-row{display:grid;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .15s}
+.table-row:last-child{border-bottom:none}
+.table-row:hover{background:rgba(255,195,0,.03)}
+.table-row span{font-size:12px;color:#888;display:flex;align-items:center}
+.table-row .name{color:#ddd;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.badge.dj{background:rgba(255,195,0,.15);color:#FFC300;border:1px solid rgba(255,195,0,.3)}
+.badge.venue{background:rgba(0,150,255,.1);color:#48a0ff;border:1px solid rgba(0,150,255,.2)}
+.badge.active{background:rgba(0,200,100,.1);color:#00c864;border:1px solid rgba(0,200,100,.2)}
+.badge.pending{background:rgba(255,195,0,.1);color:#FFC300;border:1px solid rgba(255,195,0,.2)}
+.badge.banned{background:rgba(255,68,68,.1);color:#ff4444;border:1px solid rgba(255,68,68,.2)}
+
+/* action buttons */
+.act-btn{padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:inherit;border:none;transition:all .15s}
+.act-btn.warn{background:rgba(255,195,0,.15);color:#FFC300;border:1px solid rgba(255,195,0,.3)}
+.act-btn.warn:hover{background:#FFC300;color:#000}
+.act-btn.ban{background:rgba(255,68,68,.1);color:#ff4444;border:1px solid rgba(255,68,68,.2)}
+.act-btn.ban:hover{background:#ff4444;color:#fff}
+.act-btn.ok{background:rgba(0,200,100,.1);color:#00c864;border:1px solid rgba(0,200,100,.2)}
+.act-btn.ok:hover{background:#00c864;color:#000}
+
+/* FAQ editor */
+.faq-item{background:#111;border:1px solid rgba(255,195,0,.08);margin-bottom:10px;overflow:hidden}
+.faq-q{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .15s}
+.faq-q:hover{background:rgba(255,195,0,.03)}
+.faq-q-text{font-size:13px;color:#ddd;font-weight:600}
+.faq-q-num{font-size:10px;color:#333;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-right:12px}
+.faq-body{display:none;padding:0 18px 16px;border-top:1px solid rgba(255,255,255,.04)}
+.faq-body.open{display:block}
+.faq-answer{width:100%;background:#000;border:1px solid rgba(255,195,0,.15);padding:10px 12px;color:#aaa;font-family:inherit;font-size:12px;line-height:1.7;resize:vertical;outline:none;margin-top:10px;min-height:70px;transition:border-color .2s}
+.faq-answer:focus{border-color:#FFC300}
+.faq-save{margin-top:8px;padding:6px 14px;background:#FFC300;border:none;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.faq-save:hover{background:#FFD740}
+.save-ok{font-size:10px;color:#00c864;margin-left:10px;display:none}
+
+/* chat log */
+.log-item{background:#111;border:1px solid rgba(255,255,255,.05);margin-bottom:8px;padding:14px 18px}
+.log-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.log-id{font-size:10px;color:#333;font-family:monospace}
+.log-time{font-size:10px;color:#444}
+.log-msgs{display:flex;flex-direction:column;gap:6px}
+.log-msg{font-size:12px;line-height:1.6;padding:6px 10px}
+.log-msg.u{background:rgba(255,195,0,.08);color:#FFC300;align-self:flex-start;border-left:2px solid #FFC300}
+.log-msg.a{background:rgba(255,255,255,.03);color:#888;border-left:2px solid #222}
+.log-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}
+
+/* reports */
+.report-item{background:#111;border:1px solid rgba(255,68,68,.15);padding:18px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.report-msg{font-size:12px;color:#888;line-height:1.6;margin-top:4px}
+
+/* settings */
+.settings-card{background:#111;border:1px solid rgba(255,195,0,.1);padding:28px;margin-bottom:16px}
+.settings-card h4{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:14px;letter-spacing:.5px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:13px;color:#888}
+.toggle{width:40px;height:22px;background:#222;border:none;cursor:pointer;position:relative;border-radius:11px;transition:background .2s}
+.toggle.on{background:#FFC300}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle.on::after{transform:translateX(18px)}
+
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+@media(max-width:768px){
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .modo-nav{padding:0 16px}
+  .modo-body{padding:20px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ API KEY MODAL ══ -->
+<div class="modal-wrap hidden" id="keyModal">
+  <div class="modal">
+    <svg class="modal-logo" width="44" height="44" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="16" fill="#FFC300"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
+      <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
+    </svg>
+    <h3>🔑 Clé API requise</h3>
+    <p class="modal-sub">Pour activer l'IA, entrez votre clé Anthropic.<br/>Obtenez-la sur <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    <input class="m-input mono" id="keyInput" type="password" placeholder="sk-ant-api03-..." onkeydown="if(event.key==='Enter')submitKey()"/>
+    <div class="m-err" id="keyErr"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="cancelKey()">Annuler</button>
+      <button class="btn-primary" onclick="submitKey()">ACTIVER L'IA →</button>
+    </div>
+    <p class="modal-note">Clé stockée uniquement en session. <span onclick="clearKey()">Effacer et re-saisir</span></p>
+  </div>
+</div>
+
+<!-- ══ MODERATOR LOGIN VIEW ══ -->
+<div id="viewModoLogin" class="view">
+  <div class="modo-login-box">
+    <svg width="48" height="48" viewBox="0 0 100 100" style="display:block;margin:0 auto 20px">
+      <rect width="100" height="100" rx="16" fill="#FFC300"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
+      <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
+    </svg>
+    <h2>Espace Modérateur</h2>
+    <p>Accès restreint · CUE Platform</p>
+    <label>Adresse e-mail</label>
+    <input class="m-input" id="modoEmail" type="email" placeholder="email@exemple.com" style="margin-bottom:14px"/>
+    <label>Mot de passe</label>
+    <input class="m-input" id="modoPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')modoLogin()" style="margin-bottom:14px"/>
+    <div class="m-err" id="modoErr">Email ou mot de passe incorrect.</div>
+    <button class="btn-primary" style="width:100%;display:block;margin-top:4px" onclick="modoLogin()">ACCÉDER →</button>
+    <p style="font-size:10px;color:#333;text-align:center;margin-top:16px;cursor:pointer" onclick="showChat()">← Retour au chatbot</p>
+  </div>
+</div>
+
+<!-- ══ MODERATOR DASHBOARD VIEW ══ -->
+<div id="viewModo" class="view">
+  <nav class="modo-nav">
+    <div class="modo-nav-brand">
+      <svg width="28" height="28" viewBox="0 0 100 100">
+        <rect width="100" height="100" rx="16" fill="#FFC300"/>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
+        <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
+      </svg>
+      <span>CUE</span>
+      <em>Modérateur</em>
+    </div>
+    <div class="modo-tab active" onclick="switchTab('overview')">Vue d'ensemble</div>
+    <div class="modo-tab" onclick="switchTab('users')">Utilisateurs</div>
+    <div class="modo-tab" onclick="switchTab('logs')">Conversations</div>
+    <div class="modo-tab" onclick="switchTab('faq')">FAQ</div>
+    <div class="modo-tab" onclick="switchTab('reports')">Signalements</div>
+    <div class="modo-tab" onclick="switchTab('settings')">Paramètres</div>
+    <button class="modo-logout" onclick="modoLogout()">Déconnexion</button>
+  </nav>
+
+  <div class="modo-body">
+
+    <!-- OVERVIEW -->
+    <div class="modo-section active" id="sec-overview">
+      <div style="margin-bottom:28px">
+        <div class="sec-title">Vue d'ensemble</div>
+        <div class="sec-sub">Tableau de bord modérateur · CUE Support Platform</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-val" id="stat-users">0</div><div class="stat-label">Utilisateurs inscrits</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-convos">0</div><div class="stat-label">Conversations aujourd'hui</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-reports">0</div><div class="stat-label">Signalements en attente</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:#00c864">✓</div><div class="stat-label">Statut plateforme</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div class="sec-title" style="font-size:16px;margin-bottom:12px">Activité récente</div>
+          <div class="table-wrap">
+            <div id="activityFeed" style="padding:14px 18px">
+              <div style="font-size:12px;color:#333;text-align:center;padding:20px 0">Aucune activité récente</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="sec-title" style="font-size:16px;margin-bottom:12px">Infos modérateur</div>
+          <div style="background:#111;border:1px solid rgba(255,195,0,.1);padding:20px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <div style="width:44px;height:44px;background:#FFC300;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#000">S</div>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#fff">Stanislas Kleb</div>
+                <div style="font-size:10px;color:#FFC300;letter-spacing:1.5px;text-transform:uppercase">Administrateur</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:#444;line-height:2">
+              <div>📧 stanislas.kleb@outlook.com</div>
+              <div>📱 +33 7 67 01 15 32</div>
+              <div>🕐 Connecté depuis <span id="loginTime">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="modo-section" id="sec-users">
+      <div class="sec-title">Utilisateurs</div>
+      <div class="sec-sub">Gestion des comptes DJ et Venue inscrits sur la plateforme</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <input class="m-input" id="userSearch" placeholder="Rechercher un utilisateur..." style="max-width:280px;margin:0" oninput="filterUsers()"/>
+        <select id="userFilter" style="background:#000;border:1px solid rgba(255,195,0,.2);padding:10px 14px;color:#888;font-family:inherit;font-size:13px;outline:none" onchange="filterUsers()">
+          <option value="">Tous</option>
+          <option value="dj">DJs</option>
+          <option value="venue">Venues</option>
+          <option value="active">Actifs</option>
+          <option value="pending">En attente</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <div class="table-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr">
+          <span>Utilisateur</span><span>Type</span><span>Statut</span><span>Inscrit le</span><span>Actions</span>
+        </div>
+        <div id="usersTable">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="modo-section" id="sec-logs">
+      <div class="sec-title">Conversations</div>
+      <div class="sec-sub">Historique des échanges avec le chatbot support</div>
+      <div id="logsContainer">
+        <div class="log-item">
+          <div class="log-meta">
+            <span class="log-id">#session-demo-001</span>
+            <span class="badge dj">DJ</span>
+            <span class="log-time">Aujourd'hui, 14h32</span>
+          </div>
+          <div class="log-msgs">
+            <div class="log-msg u"><div class="log-label">Utilisateur</div>Comment optimiser mon profil DJ ?</div>
+            <div class="log-msg a"><div class="log-label">Assistant CUE</div>Ajoutez une biographie claire, vos genres musicaux, des références, des extraits audio et vos disponibilités.</div>
+          </div>
+        </div>
+        <div class="log-item">
+          <div class="log-meta">
+            <span class="log-id">#session-demo-002</span>
+            <span class="badge venue">Venue</span>
+            <span class="log-time">Aujourd'hui, 11h15</span>
+          </div>
+          <div class="log-msgs">
+            <div class="log-msg u"><div class="log-label">Utilisateur</div>Quelle commission CUE applique-t-elle ?</div>
+            <div class="log-msg a"><div class="log-label">Assistant CUE</div>Starter : gratuit, 7% commission. Pro DJ : 29€/mois, 3%. Business : 149€/mois, 0%.</div>
+          </div>
+        </div>
+        <div style="text-align:center;padding:20px;font-size:12px;color:#333">Les vraies conversations s'enregistreront ici en production</div>
+      </div>
+    </div>
+
+    <!-- FAQ EDITOR -->
+    <div class="modo-section" id="sec-faq">
+      <div class="sec-title">Éditeur FAQ</div>
+      <div class="sec-sub">Modifiez les réponses du chatbot en temps réel — 30 questions disponibles</div>
+      <div id="faqEditor"><!-- populated by JS --></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="modo-section" id="sec-reports">
+      <div class="sec-title">Signalements</div>
+      <div class="sec-sub">Comportements signalés par les utilisateurs</div>
+      <div class="report-item">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <span class="badge pending">En attente</span>
+            <span style="font-size:10px;color:#444">Il y a 2 heures</span>
+          </div>
+          <div style="font-size:13px;color:#ddd;font-weight:600">Signalement : profil suspect</div>
+          <div class="report-msg">Un utilisateur a signalé un profil DJ avec des photos non conformes et des informations incohérentes.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="act-btn ok">Résoudre</button>
+          <button class="act-btn ban">Suspendre</button>
+        </div>
+      </div>
+      <div style="text-align:center;padding:28px;font-size:12px;color:#333">Les nouveaux signalements apparaîtront ici automatiquement</div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="modo-section" id="sec-settings">
+      <div class="sec-title">Paramètres</div>
+      <div class="sec-sub">Configuration de la plateforme de support</div>
+      <div class="settings-card">
+        <h4>Chatbot</h4>
+        <div class="settings-row">
+          <div class="settings-label">Chatbot actif</div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Suggestions rapides</div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Escalade automatique vers support humain</div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Langue par défaut</div>
+          <select style="background:#000;border:1px solid rgba(255,195,0,.2);padding:6px 12px;color:#888;font-family:inherit;font-size:12px;outline:none">
+            <option>Automatique (FR/EN)</option>
+            <option>Français uniquement</option>
+            <option>English only</option>
+          </select>
+        </div>
+      </div>
+      <div class="settings-card">
+        <h4>Notifications</h4>
+        <div class="settings-row">
+          <div class="settings-label">Alertes signalements par email</div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Résumé quotidien</div>
+          <button class="toggle" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Email de réception</div>
+          <span style="font-size:12px;color:#FFC300">stanislas.kleb@outlook.com</span>
+        </div>
+      </div>
+      <div class="settings-card">
+        <h4>Sécurité</h4>
+        <div class="settings-row">
+          <div class="settings-label">Compte modérateur</div>
+          <span style="font-size:12px;color:#888">stanislas.kleb@outlook.com</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">Changer le mot de passe</div>
+          <button class="act-btn warn" onclick="alert('Fonctionnalité disponible en production')">Modifier</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ CHAT VIEW ══ -->
+<div id="viewChat" class="view active">
+  <div class="chat-wrap">
+    <div class="chat-header">
+      <svg width="38" height="38" viewBox="0 0 100 100">
+        <rect width="100" height="100" rx="16" fill="#FFC300"/>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/>
+        <text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text>
+      </svg>
+      <div class="header-info">
+        <h2>CUE Support</h2>
+        <div class="header-status"><span class="dot-green"></span>Assistant IA · FAQ intégrée</div>
+      </div>
+      <div class="header-count">30 questions<br/>disponibles</div>
+    </div>
+    <div class="chat-messages" id="messages"></div>
+    <div class="chat-input-area">
+      <input class="chat-input" id="userInput" type="text" placeholder="Posez votre question..." onkeydown="if(event.key==='Enter')sendMessage()"/>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">↑</button>
+    </div>
+    <div class="chat-footer">
+      <span>Powered by Claude AI</span>
+      <span class="modo-link" onclick="showModoLogin()">⚙ Admin</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AUTH (API KEY) ────────────────────────────────────────
+let _apiKey = sessionStorage.getItem('cue_key') || null;
+let _keyResolve = null;
+
+function requireKey(){
+  if(_apiKey) return Promise.resolve(_apiKey);
+  return new Promise(res => {
+    _keyResolve = res;
+    document.getElementById('keyErr').classList.remove('on');
+    document.getElementById('keyInput').value = '';
+    document.getElementById('keyModal').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('keyInput').focus(), 80);
+  });
+}
+function submitKey(){
+  const v = document.getElementById('keyInput').value.trim();
+  const err = document.getElementById('keyErr');
+  if(!v || !v.startsWith('sk-ant-')){
+    err.textContent = 'Clé invalide — doit commencer par sk-ant-...';
+    err.classList.add('on'); return;
+  }
+  _apiKey = v; sessionStorage.setItem('cue_key', v);
+  document.getElementById('keyModal').classList.add('hidden');
+  if(_keyResolve){ _keyResolve(_apiKey); _keyResolve = null; }
+}
+function cancelKey(){
+  document.getElementById('keyModal').classList.add('hidden');
+  if(_keyResolve){ _keyResolve(null); _keyResolve = null; }
+}
+function clearKey(){
+  _apiKey = null; sessionStorage.removeItem('cue_key');
+  document.getElementById('keyInput').value = '';
+  document.getElementById('keyErr').textContent = 'Clé effacée. Entrez-en une nouvelle.';
+  document.getElementById('keyErr').classList.add('on');
+}
+
+// ── MODERATOR AUTH ────────────────────────────────────────
+const MODO_CREDS = { email:'stanislas.kleb@outlook.com', pass:'Stan131234' };
+let modoLoggedIn = false;
+
+function showChat(){ setView('viewChat'); }
+function showModoLogin(){ setView('viewModoLogin'); document.getElementById('modoEmail').focus(); }
+
+function modoLogin(){
+  const email = document.getElementById('modoEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('modoPass').value;
+  const err   = document.getElementById('modoErr');
+  err.style.display = 'none';
+  if(email !== MODO_CREDS.email || pass !== MODO_CREDS.pass){
+    err.style.display = 'block'; return;
+  }
+  modoLoggedIn = true;
+  document.getElementById('loginTime').textContent = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  setView('viewModo');
+  initModo();
+}
+
+function modoLogout(){
+  modoLoggedIn = false;
+  document.getElementById('modoEmail').value = '';
+  document.getElementById('modoPass').value = '';
+  setView('viewChat');
+}
+
+function setView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── MODERATOR DASHBOARD ───────────────────────────────────
+const TABS = ['overview','users','logs','faq','reports','settings'];
+
+function switchTab(tab){
+  TABS.forEach(t=>{
+    document.getElementById('sec-'+t).classList.toggle('active', t===tab);
+  });
+  document.querySelectorAll('.modo-tab').forEach((el,i)=>{
+    el.classList.toggle('active', TABS[i]===tab);
+  });
+}
+
+// ── FAQ DATA ──────────────────────────────────────────────
+let FAQ = [
+  {q:"Je ne parviens pas à me connecter",            r:"Vérifiez votre email et mot de passe. Utilisez « Mot de passe oublié » si nécessaire. Si le problème persiste, contactez cue.dj.app@gmail.com."},
+  {q:"Je n'ai pas reçu l'email de validation",       r:"Vérifiez vos courriers indésirables. Vous pouvez renvoyer l'email depuis la page de connexion."},
+  {q:"Comment réinitialiser mon mot de passe ?",     r:"Cliquez sur « Mot de passe oublié », entrez votre email et suivez les instructions."},
+  {q:"Comment modifier mes informations personnelles ?", r:"Profil → Paramètres → Modifier les informations."},
+  {q:"Comment supprimer mon compte ?",               r:"Paramètres → Confidentialité → Supprimer mon compte."},
+  {q:"Pourquoi vérifier mon identité ?",             r:"La vérification sécurise les transactions et assure la fiabilité des utilisateurs."},
+  {q:"Combien de temps prend la vérification ?",     r:"Quelques minutes en général. Un contrôle manuel peut parfois prolonger le délai."},
+  {q:"Ma vérification est refusée, que faire ?",     r:"Vérifiez la qualité et validité de vos documents, puis soumettez à nouveau."},
+  {q:"Mes données sont-elles sécurisées ?",          r:"Oui. CUE chiffre toutes les données sensibles et applique des standards de sécurité élevés."},
+  {q:"Comment signaler un comportement suspect ?",   r:"Bouton « Signaler » sur le profil ou dans le booking concerné."},
+  {q:"Comment optimiser mon profil DJ ?",            r:"Ajoutez biographie, genres musicaux, références, extraits audio et disponibilités."},
+  {q:"Puis-je sélectionner plusieurs styles musicaux ?", r:"Oui, assurez-vous qu'ils correspondent à votre univers artistique."},
+  {q:"Comment augmenter mes chances d'être sélectionné ?", r:"Profil complet, avis positifs, et respect de vos engagements."},
+  {q:"Mon profil est en attente de validation",      r:"Une vérification qualité est en cours. Cela prend généralement quelques minutes."},
+  {q:"Comment gérer mes disponibilités ?",           r:"Tableau de bord → section Calendrier → mettez à jour vos dates."},
+  {q:"Comment créer un profil venue ?",              r:"Sélectionnez « Venue » à l'inscription, complétez : localisation, capacité, styles et fiche technique."},
+  {q:"Comment préciser les équipements disponibles ?", r:"Dans la fiche technique : audio, DJ booth, éclairage et contraintes horaires."},
+  {q:"Comment publier une date à pourvoir ?",        r:"« Créer un événement » → date, budget, styles, conditions."},
+  {q:"Comment sélectionner un DJ ?",                 r:"Consultez les profils, écoutez les extraits, vérifiez les avis, confirmez via la plateforme."},
+  {q:"Puis-je modifier un événement publié ?",       r:"Oui, tant qu'il n'est pas confirmé par un DJ."},
+  {q:"Comment fonctionne un booking sur CUE ?",      r:"Demande → Acceptation → Paiement sécurisé → Confirmation → Événement → Validation → Évaluation."},
+  {q:"Puis-je modifier un booking confirmé ?",       r:"Oui, mais les modifications doivent être validées par les deux parties."},
+  {q:"Que faire en cas de no-show ?",                r:"Signalez immédiatement depuis le booking pour ouverture d'un dossier."},
+  {q:"Comment contacter l'autre partie ?",           r:"Via le chat intégré CUE uniquement, pour conserver une trace officielle."},
+  {q:"Puis-je annuler un booking ?",                 r:"Oui, selon les conditions d'annulation définies à la confirmation."},
+  {q:"Comment les paiements sont-ils sécurisés ?",   r:"Via Stripe, avec sécurisation complète des transactions."},
+  {q:"Quand le DJ reçoit-il son paiement ?",         r:"Après validation de l'événement (modèle acompte + solde)."},
+  {q:"Que faire si mon paiement est refusé ?",       r:"Vérifiez votre carte et les autorisations bancaires (3D Secure)."},
+  {q:"Quelle commission CUE applique-t-elle ?",      r:"Starter : gratuit, 7% commission. Pro DJ : 29€/mois, 3%. Business : 149€/mois, 0%."},
+  {q:"Comment télécharger une facture ?",            r:"Onglet Transactions → sélectionnez la transaction → téléchargez le justificatif."},
+];
+
+// ── MOCK USERS ────────────────────────────────────────────
+const USERS = [
+  {name:"Lorenzo Benzaquem", email:"lorenzo@example.com", type:"dj",    status:"active",  date:"01/03/2025"},
+  {name:"Club Le Rex",        email:"rex@example.com",    type:"venue",  status:"active",  date:"15/02/2025"},
+  {name:"DJ Maxime",          email:"maxime@example.com", type:"dj",    status:"pending", date:"08/03/2025"},
+  {name:"Virginia K.",        email:"virginia@example.com",type:"dj",   status:"active",  date:"22/01/2025"},
+  {name:"Sunset Rooftop",     email:"sunset@example.com", type:"venue", status:"pending", date:"07/03/2025"},
+];
+let usersFiltered = [...USERS];
+
+function initModo(){
+  // Stats
+  document.getElementById('stat-users').textContent = USERS.length;
+  document.getElementById('stat-convos').textContent = 7;
+  document.getElementById('stat-reports').textContent = 1;
+  renderUsers();
+  renderFAQ();
+}
+
+function renderUsers(){
+  const search = (document.getElementById('userSearch')?.value || '').toLowerCase();
+  const filter = document.getElementById('userFilter')?.value || '';
+  const filtered = USERS.filter(u=>{
+    const matchSearch = !search || u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search);
+    const matchFilter = !filter || u.type === filter || u.status === filter;
+    return matchSearch && matchFilter;
+  });
+  const tbody = document.getElementById('usersTable');
+  if(!filtered.length){
+    tbody.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:#333">Aucun utilisateur trouvé</div>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(u=>`
+    <div class="table-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr">
+      <span class="name">${u.name}<br><span style="font-size:10px;color:#333;font-weight:400">${u.email}</span></span>
+      <span><span class="badge ${u.type}">${u.type==='dj'?'DJ':'Venue'}</span></span>
+      <span><span class="badge ${u.status}">${u.status==='active'?'Actif':'En attente'}</span></span>
+      <span>${u.date}</span>
+      <span style="gap:6px">
+        <button class="act-btn warn">Avert.</button>
+        <button class="act-btn ban">Suspendre</button>
+      </span>
+    </div>`).join('');
+}
+
+function filterUsers(){ renderUsers(); }
+
+function renderFAQ(){
+  const container = document.getElementById('faqEditor');
+  container.innerHTML = FAQ.map((f,i)=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(${i})">
+        <span>
+          <span class="faq-q-num">${String(i+1).padStart(2,'0')}.</span>
+          <span class="faq-q-text">${f.q}</span>
+        </span>
+        <span style="color:#333;font-size:18px" id="faq-arrow-${i}">›</span>
+      </div>
+      <div class="faq-body" id="faq-body-${i}">
+        <textarea class="faq-answer" id="faq-ans-${i}" rows="3">${f.r}</textarea>
+        <div style="display:flex;align-items:center">
+          <button class="faq-save" onclick="saveFAQ(${i})">Enregistrer</button>
+          <span class="save-ok" id="faq-ok-${i}">✓ Sauvegardé</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleFAQ(i){
+  const body = document.getElementById('faq-body-'+i);
+  const arrow = document.getElementById('faq-arrow-'+i);
+  const open = body.classList.toggle('open');
+  arrow.textContent = open ? '˅' : '›';
+  arrow.style.color = open ? '#FFC300' : '#333';
+}
+
+function saveFAQ(i){
+  const val = document.getElementById('faq-ans-'+i).value.trim();
+  if(!val) return;
+  FAQ[i].r = val;
+  const ok = document.getElementById('faq-ok-'+i);
+  ok.style.display = 'inline';
+  setTimeout(()=>ok.style.display='none', 2000);
+}
+
+// ── CHATBOT SYSTEM PROMPT (uses FAQ array, always up to date) ──
+function buildSystem(){
+  return `Tu es l'assistant support officiel de CUE, une plateforme de booking DJ/venue (find, book, pay, review).
+
+Réponds dans la langue de l'utilisateur (français ou anglais). Sois chaleureux, direct et précis. 1-3 phrases max.
+
+=== FAQ CUE ===
+${FAQ.map(f=>`Q: ${f.q}\nR: ${f.r}`).join('\n\n')}
+=== FIN FAQ ===
+
+TARIFS : Starter gratuit 7% | Pro DJ 29€/mois 3% | Business 149€/mois 0%
+CONTACT : cue.dj.app@gmail.com | +33 7 67 01 15 32 | @cuedjapp
+Si hors FAQ, donne ta meilleure réponse et propose d'escalader vers le support humain.`;
+}
+
+// ── CHATBOT LOGIC ─────────────────────────────────────────
+const SUGGESTIONS = [
+  "Comment fonctionne un booking ?",
+  "Quels sont vos tarifs ?",
+  "Comment optimiser mon profil DJ ?",
+  "Paiement refusé, que faire ?",
+];
+let history = [];
+
+function logoSVG(s){
+  return `<svg width="${s}" height="${s}" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>`;
+}
+function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+function addMsg(role, text){
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  d.innerHTML = role==='bot'
+    ? `<div class="bot-avatar">${logoSVG(22)}</div><div class="bubble bot">${esc(text)}</div>`
+    : `<div class="bubble user">${esc(text)}</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function addTyping(){
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className='msg bot'; d.id='typing';
+  d.innerHTML=`<div class="bot-avatar">${logoSVG(22)}</div><div class="bubble bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function removeTyping(){ document.getElementById('typing')?.remove(); }
+
+function showSuggestions(){
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className='suggestions'; d.id='suggBlock';
+  d.innerHTML=`<div class="sugg-label">Questions fréquentes</div><div class="sugg-list">
+    ${SUGGESTIONS.map(s=>`<button class="sugg-btn" onclick="sendMessage('${s.replace(/'/g,"\\'")}')"> ${s}</button>`).join('')}
+  </div>`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+
+async function sendMessage(preset){
+  const input = document.getElementById('userInput');
+  const btn = document.getElementById('sendBtn');
+  const text = preset || input.value.trim();
+  if(!text) return;
+  document.getElementById('suggBlock')?.remove();
+  input.value=''; btn.disabled=true;
+  addMsg('user', text);
+  history.push({role:'user', content:text});
+  const key = await requireKey();
+  if(!key){ btn.disabled=false; return; }
+  addTyping();
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true',
+      },
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:buildSystem(),messages:history}),
+    });
+    const data = await res.json();
+    if(!res.ok){
+      if(res.status===401){_apiKey=null;sessionStorage.removeItem('cue_key');}
+      throw new Error(data.error?.message||`Erreur ${res.status}`);
+    }
+    const reply = data.content?.[0]?.text||'Désolé, une erreur est survenue.';
+    removeTyping(); addMsg('bot', reply);
+    history.push({role:'assistant', content:reply});
+  }catch(e){
+    removeTyping();
+    addMsg('bot',`❌ ${e.message}\n\nContactez-nous : cue.dj.app@gmail.com`);
+  }
+  btn.disabled=false; document.getElementById('userInput').focus();
+}
+
+// ── INIT ─────────────────────────────────────────────────
+window.onload = function(){
+  if(_apiKey) document.getElementById('keyModal').classList.add('hidden');
+  addMsg('bot','Bonjour ! 👋 Je suis l\'assistant CUE.\nJe réponds à toutes vos questions sur la plateforme — bookings, paiements, profils DJ/Venue, et plus.\n\nComment puis-je vous aider ?');
+  showSuggestions();
+};
+</script>
+</body>
+</html>
