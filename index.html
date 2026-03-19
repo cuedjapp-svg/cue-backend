@@ -1028,6 +1028,8 @@ function saveFaqItem(i){
   const ok=document.getElementById('faq-ok-'+i);
   ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);
 }
+// Warm up backend
+fetch("https://cue-backend-c1x8.onrender.com/ping").catch(()=>{});
 </script>
 </body>
 </html>
