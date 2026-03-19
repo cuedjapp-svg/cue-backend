@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--Y:#FFC300;--Y2:#FFD740;--BG:#080808;--CARD:#111;--BORDER:rgba(255,195,0,.13);--TEXT:#ddd;--MUTED:#444;--D:'Barlow Condensed',sans-serif;--B:'Barlow',sans-serif}
+:root{--Y:#FFC300;--Y2:#FFD740;--BG:#080808;--CARD:#111;--BORDER:rgba(255,195,0,.13);--TEXT:#ddd;--MUTED:#bbb;--D:'Barlow Condensed',sans-serif;--B:'Barlow',sans-serif}
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
 body{background:var(--BG);color:var(--TEXT);font-family:var(--B);overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
@@ -127,13 +127,13 @@ section{padding:100px 52px}
 
 /* ─── FOOTER ─── */
 footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px}
-.fbrand p{font-size:12px;color:#1e1e1e;line-height:1.7;max-width:220px;margin-top:12px}
+.fbrand p{font-size:12px;color:#ccc;line-height:1.7;max-width:220px;margin-top:12px}
 .fcol h5{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--MUTED);margin-bottom:12px}
 .fcol ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.fcol ul a{font-size:12px;color:#1e1e1e;text-decoration:none;transition:color .2s}
+.fcol ul a{font-size:12px;color:#ccc;text-decoration:none;transition:color .2s}
 .fcol ul a:hover{color:var(--Y)}
 .fbot{border-top:1px solid var(--BORDER);padding:18px 52px;display:flex;justify-content:space-between;align-items:center}
-.fbot span{font-size:10px;color:#1a1a1a}
+.fbot span{font-size:10px;color:#ccc}
 
 /* ─── AUTH OVERLAY ─── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:20px}
@@ -337,12 +337,12 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
   <div class="amodal">
     <button class="aclose" onclick="closeAuth()">✕</button>
     <div style="display:flex;justify-content:center;margin-bottom:18px"><svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></div>
-    <h2>Bienvenue</h2>
-    <p id="authSubtitle">Connectez-vous à votre compte CUE</p>
+    <h2>Welcome</h2>
+    <p id="authSubtitle">Sign in to your CUE account</p>
     <div id="stepRole">
       <div class="asel">
-        <div class="aopt" id="optDJ" onclick="selectRole('dj')"><div class="aicon">🎧</div><div class="alabel">Je suis DJ</div><div class="adesc">Trouver des gigs & gérer mes bookings</div></div>
-        <div class="aopt" id="optVenue" onclick="selectRole('venue')"><div class="aicon">🏢</div><div class="alabel">Je suis Venue</div><div class="adesc">Trouver des DJs pour mes événements</div></div>
+        <div class="aopt" id="optDJ" onclick="selectRole('dj')"><div class="aicon">🎧</div><div class="alabel">I am a DJ</div><div class="adesc">Find gigs & manage my bookings</div></div>
+        <div class="aopt" id="optVenue" onclick="selectRole('venue')"><div class="aicon">🏢</div><div class="alabel">I am a Venue</div><div class="adesc">Find DJs for my events</div></div>
       </div>
     </div>
     <div id="stepLogin" style="display:none">
@@ -351,14 +351,14 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
         <span style="font-size:11px;color:var(--MUTED);text-transform:uppercase;letter-spacing:1px">Retour</span>
       </div>
       <div id="roleTag" style="font-family:var(--D);font-size:13px;color:var(--Y);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;text-align:center"></div>
-      <input class="ainput" type="email" id="loginEmail" placeholder="Adresse email" autocomplete="email"/>
-      <input class="ainput" type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
-      <div class="aerr" id="loginErr">Email ou mot de passe incorrect.</div>
+      <input class="ainput" type="email" id="loginEmail" placeholder="Email address" autocomplete="email"/>
+      <input class="ainput" type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <div class="aerr" id="loginErr">Incorrect email or password.</div>
       <button class="brun" style="margin-top:4px" onclick="doLogin()">
         <div class="spin" id="loginSpin"></div>
-        <span id="loginLabel">SE CONNECTER →</span>
+        <span id="loginLabel">SIGN IN →</span>
       </button>
-      <p style="font-size:10px;color:var(--MUTED);text-align:center;margin-top:14px">Pas de compte ? <a href="/cdn-cgi/l/email-protection#e2819787cc8688cc839292a2858f838b8ecc818d8f" style="color:var(--Y)">Contactez-nous</a></p>
+      <p style="font-size:10px;color:var(--MUTED);text-align:center;margin-top:14px">No account? <a href="/cdn-cgi/l/email-protection#e2819787cc8688cc839292a2858f838b8ecc818d8f" style="color:var(--Y)">Contact us</a></p>
     </div>
   </div>
 </div>
@@ -367,15 +367,15 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
 <div class="modo-login-wrap hidden" id="modoLoginWrap">
   <div class="modo-login-box">
     <div style="display:flex;justify-content:center;margin-bottom:20px"><svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></div>
-    <h2>Espace Modérateur</h2>
-    <p>Accès restreint · CUE Platform</p>
+    <h2>Moderator Space</h2>
+    <p>Restricted access · CUE Platform</p>
     <label class="modo-label">Email</label>
     <input class="ainput" id="modoEmail" type="email" placeholder="email@exemple.com" style="margin-bottom:14px"/>
-    <label class="modo-label">Mot de passe</label>
+    <label class="modo-label">Password</label>
     <input class="ainput" id="modoPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')modoLogin()" style="margin-bottom:14px"/>
-    <div class="aerr" id="modoErr" style="display:none">Email ou mot de passe incorrect.</div>
+    <div class="aerr" id="modoErr" style="display:none">Incorrect email or password.</div>
     <button class="brun" style="margin-top:4px" onclick="modoLogin()">ACCÉDER →</button>
-    <p style="font-size:10px;color:#222;text-align:center;margin-top:16px;cursor:pointer" onclick="hideModoLogin()">← Retour au site</p>
+    <p style="font-size:10px;color:#999;text-align:center;margin-top:16px;cursor:pointer" onclick="hideModoLogin()">← Back au site</p>
   </div>
 </div>
 
@@ -386,60 +386,60 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
       <svg width="26" height="26" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
       <span>CUE</span><em>Modo</em>
     </div>
-    <button class="mtab active" onclick="switchMTab(this,'m-overview')">Vue d'ensemble</button>
-    <button class="mtab" onclick="switchMTab(this,'m-users')">Utilisateurs</button>
+    <button class="mtab active" onclick="switchMTab(this,'m-overview')">Overview</button>
+    <button class="mtab" onclick="switchMTab(this,'m-users')">Users</button>
     <button class="mtab" onclick="switchMTab(this,'m-logs')">Conversations</button>
     <button class="mtab" onclick="switchMTab(this,'m-faq')">FAQ</button>
-    <button class="mtab" onclick="switchMTab(this,'m-settings')">Paramètres</button>
-    <button class="modo-logout" onclick="modoLogout()">Déconnexion</button>
+    <button class="mtab" onclick="switchMTab(this,'m-settings')">Settings</button>
+    <button class="modo-logout" onclick="modoLogout()">Logout</button>
   </nav>
   <div class="modo-body">
     <div class="msec active" id="m-overview">
-      <div style="margin-bottom:24px"><div class="msec-title">Vue d'ensemble</div><div class="msec-sub">Tableau de bord · CUE Platform</div></div>
+      <div style="margin-bottom:24px"><div class="msec-title">Overview</div><div class="msec-sub">Dashboard · CUE Platform</div></div>
       <div class="mstat-row">
-        <div class="mstat"><div class="mstat-val">12</div><div class="mstat-label">Utilisateurs</div></div>
+        <div class="mstat"><div class="mstat-val">12</div><div class="mstat-label">Users</div></div>
         <div class="mstat"><div class="mstat-val">7</div><div class="mstat-label">Conversations</div></div>
         <div class="mstat"><div class="mstat-val">3</div><div class="mstat-label">Contrats générés</div></div>
-        <div class="mstat"><div class="mstat-val" style="color:#00c864">✓</div><div class="mstat-label">Statut plateforme</div></div>
+        <div class="mstat"><div class="mstat-val" style="color:#00c864">✓</div><div class="mstat-label">Platform status</div></div>
       </div>
       <div style="background:var(--CARD);border:1px solid var(--BORDER);padding:20px">
         <div class="msec-title" style="font-size:15px;margin-bottom:14px">Infos modérateur</div>
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
           <div style="width:44px;height:44px;background:var(--Y);display:flex;align-items:center;justify-content:center;font-family:var(--D);font-size:22px;font-weight:900;color:#000">S</div>
-          <div><div style="font-size:14px;font-weight:700;color:#fff">Stanislas Kleb</div><div style="font-size:10px;color:var(--Y);letter-spacing:1.5px;text-transform:uppercase">Administrateur</div></div>
+          <div><div style="font-size:14px;font-weight:700;color:#fff">Stanislas Kleb</div><div style="font-size:10px;color:var(--Y);letter-spacing:1.5px;text-transform:uppercase">Administrator</div></div>
         </div>
         <div style="font-size:11px;color:var(--MUTED);line-height:2.2">
-          <div>📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7a090e1b141309161b095411161f183a150f0e1615151154191517">[email&#160;protected]</a></div><div>📱 +33 7 67 01 15 32</div><div>🔑 Accès complet</div>
+          <div>📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7a090e1b141309161b095411161f183a150f0e1615151154191517">[email&#160;protected]</a></div><div>📱 +33 7 67 01 15 32</div><div>🔑 Full access</div>
         </div>
       </div>
     </div>
     <div class="msec" id="m-users">
-      <div class="msec-title">Utilisateurs</div><div class="msec-sub">Gestion des comptes DJ et Venue</div>
+      <div class="msec-title">Users</div><div class="msec-sub">DJ and Venue account management</div>
       <div class="mtable">
         <div class="mth" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span>Utilisateur</span><span>Type</span><span>Statut</span><span>Inscrit</span><span>Actions</span></div>
-        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Lorenzo B.<div style="font-size:10px;color:#333;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="89e5e6fbece7f3e6c9eafceca7eae6e4">[email&#160;protected]</a></div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge active">Actif</span></span><span>01/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
-        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Club Le Rex<div style="font-size:10px;color:#333;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c2e39241c30392e3924723a2e">[email&#160;protected]</a></div></span><span><span class="mbadge venue">Venue</span></span><span><span class="mbadge active">Actif</span></span><span>15/02/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
-        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">DJ Maxime<div style="font-size:10px;color:#333;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b262a3322262e0b2f2165282426">[email&#160;protected]</a></div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge pending">En attente</span></span><span>08/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Lorenzo B.<div style="font-size:10px;color:#aaa;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="89e5e6fbece7f3e6c9eafceca7eae6e4">[email&#160;protected]</a></div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge active">Actif</span></span><span>01/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Club Le Rex<div style="font-size:10px;color:#aaa;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c2e39241c30392e3924723a2e">[email&#160;protected]</a></div></span><span><span class="mbadge venue">Venue</span></span><span><span class="mbadge active">Actif</span></span><span>15/02/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">DJ Maxime<div style="font-size:10px;color:#aaa;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b262a3322262e0b2f2165282426">[email&#160;protected]</a></div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge pending">Pending</span></span><span>08/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
       </div>
     </div>
     <div class="msec" id="m-logs">
-      <div class="msec-title">Conversations</div><div class="msec-sub">Historique des échanges chatbot</div>
-      <div style="text-align:center;padding:20px;font-size:12px;color:#2a2a2a">Les conversations s'enregistreront ici en production</div>
+      <div class="msec-title">Conversations</div><div class="msec-sub">Chatbot exchange history</div>
+      <div style="text-align:center;padding:20px;font-size:12px;color:#999">Conversations will be recorded here in production</div>
     </div>
     <div class="msec" id="m-faq">
-      <div class="msec-title">Éditeur FAQ</div><div class="msec-sub">Modifiez les réponses — appliqué immédiatement au chatbot</div>
+      <div class="msec-title">FAQ Editor</div><div class="msec-sub">Edit responses — applied immediately to the chatbot</div>
       <div id="faqEditorContainer"></div>
     </div>
     <div class="msec" id="m-settings">
-      <div class="msec-title">Paramètres</div><div class="msec-sub">Configuration de la plateforme</div>
-      <div class="scard"><h4>Chatbot & IA</h4>
-        <div class="srow"><div class="srow-label">Chatbot actif</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
-        <div class="srow"><div class="srow-label">Générateur de contrats actif</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
-        <div class="srow"><div class="srow-label">Suggestions rapides</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="msec-title">Settings</div><div class="msec-sub">Configuration de la plateforme</div>
+      <div class="scard"><h4>Chatbot & AI</h4>
+        <div class="srow"><div class="srow-label">Chatbot active</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div class="srow-label">Contract generator active</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+        <div class="srow"><div class="srow-label">Quick suggestions</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
       </div>
-      <div class="scard"><h4>Sécurité</h4>
-        <div class="srow"><div class="srow-label">Compte modérateur</div><span style="font-size:12px;color:var(--Y)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd8e899c93948e919c8ed39691989fbd92888991929296d39e9290">[email&#160;protected]</a></span></div>
-        <div class="srow"><div class="srow-label">Changer le mot de passe</div><button class="mact warn" onclick="alert('Disponible en production')">Modifier</button></div>
+      <div class="scard"><h4>Security</h4>
+        <div class="srow"><div class="srow-label">Moderator account</div><span style="font-size:12px;color:var(--Y)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd8e899c93948e919c8ed39691989fbd92888991929296d39e9290">[email&#160;protected]</a></span></div>
+        <div class="srow"><div class="srow-label">Change password</div><button class="mact warn" onclick="alert('Available in production')">Edit</button></div>
       </div>
     </div>
   </div>
@@ -453,14 +453,14 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
     <svg class="logo-svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
   </a>
   <ul class="nav-links">
-    <li><a href="#features">Fonctionnalités</a></li>
+    <li><a href="#features">Features</a></li>
     <li><a href="#matching">AI Matching</a></li>
-    <li><a href="#contracts">Contrats</a></li>
-    <li><a href="#pricing">Tarifs</a></li>
+    <li><a href="#contracts">Contracts</a></li>
+    <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-cta" id="navCta">
-    <button class="bg" onclick="openAuth()">Connexion</button>
-    <button class="bp" onclick="openAuth()">Rejoindre CUE</button>
+    <button class="bg" onclick="openAuth()">Login</button>
+    <button class="bp" onclick="openAuth()">Join CUE</button>
   </div>
 </nav>
 
@@ -468,18 +468,18 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
   <div class="hero-bg"></div>
   <svg class="hero-logo" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
   <p class="hey">✦ Find / Book / Pay / Review</p>
-  <h1>LA SCÈNE<br/>COMMENCE <span class="y">ICI.</span></h1>
-  <p class="hsub">Connectez les DJs vérifiés avec les clubs, agences, mariages et événements privés. Booking intelligent, contrats IA et matching avancé.</p>
+  <h1>THE STAGE<br/>STARTS <span class="y">HERE.</span></h1>
+  <p class="hsub">Connect verified DJs with clubs, agencies, weddings and private events. Smart booking, AI contracts and advanced matching.</p>
   <div class="hbar">
-    <button class="bh y" onclick="openAuthAs('venue')">Je suis un Venue</button>
-    <button class="bh o" onclick="openAuthAs('dj')">Je suis DJ</button>
+    <button class="bh y" onclick="openAuthAs('venue')">I am a Venue</button>
+    <button class="bh o" onclick="openAuthAs('dj')">I am a DJ</button>
   </div>
   <div class="hstats">
-    <div><div class="hstat-val">2M+</div><div class="hstat-label">DJs dans le monde</div></div>
+    <div><div class="hstat-val">2M+</div><div class="hstat-label">DJs worldwide</div></div>
     <div style="width:1px;background:var(--BORDER)"></div>
-    <div><div class="hstat-val">55%</div><div class="hstat-label">Veulent plus de gigs</div></div>
+    <div><div class="hstat-val">55%</div><div class="hstat-label">Want more gigs</div></div>
     <div style="width:1px;background:var(--BORDER)"></div>
-    <div><div class="hstat-val">9B$</div><div class="hstat-label">Marché global</div></div>
+    <div><div class="hstat-val">9B$</div><div class="hstat-label">Global market</div></div>
   </div>
   <div class="ticker">
     <div class="ticker-inner">
@@ -489,155 +489,155 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
 </section>
 
 <section id="features">
-  <p class="stag">Plateforme</p>
-  <h2 class="stitle">TOUT CE DONT<br/>VOUS AVEZ BESOIN.</h2>
-  <p class="ssub">De la recherche au paiement, CUE gère chaque étape du booking avec intelligence.</p>
+  <p class="stag">Platform</p>
+  <h2 class="stitle">EVERYTHING<br/>YOU NEED.</h2>
+  <p class="ssub">From search to payment, CUE handles every step of the booking process intelligently.</p>
   <div class="fg3">
-    <div class="fcard"><div class="fcard-icon">🎯</div><div class="fcard-title">Matching IA</div><div class="fcard-desc">Notre algorithme analyse le vibe, le budget et le style pour trouver le DJ parfait pour votre événement.</div></div>
-    <div class="fcard"><div class="fcard-icon">📋</div><div class="fcard-title">Contrats intelligents</div><div class="fcard-desc">Contrats de prestation générés par IA en quelques secondes. 10 sections légales, prêts à signer.</div></div>
-    <div class="fcard"><div class="fcard-icon">💳</div><div class="fcard-title">Paiement sécurisé</div><div class="fcard-desc">Acompte et solde via Stripe. Le DJ est payé après validation de la prestation.</div></div>
-    <div class="fcard"><div class="fcard-icon">⭐</div><div class="fcard-title">Avis vérifiés</div><div class="fcard-desc">Uniquement des avis de vrais bookings. Construisez votre réputation sur des bases solides.</div></div>
-    <div class="fcard"><div class="fcard-icon">📅</div><div class="fcard-title">Calendrier live</div><div class="fcard-desc">Gérez vos disponibilités en temps réel. Les venues voient instantanément qui est libre.</div></div>
-    <div class="fcard"><div class="fcard-icon">🛡️</div><div class="fcard-title">Profils vérifiés</div><div class="fcard-desc">Chaque DJ est vérifié par notre équipe. Identité, expérience et références contrôlées.</div></div>
+    <div class="fcard"><div class="fcard-icon">🎯</div><div class="fcard-title">AI Matching</div><div class="fcard-desc">Our algorithm analyzes the vibe, budget and style to find the perfect DJ for your event.</div></div>
+    <div class="fcard"><div class="fcard-icon">📋</div><div class="fcard-title">Smart Contracts</div><div class="fcard-desc">AI-generated performance contracts in seconds. 10 legal sections, ready to sign.</div></div>
+    <div class="fcard"><div class="fcard-icon">💳</div><div class="fcard-title">Secure Payment</div><div class="fcard-desc">Deposit and balance via Stripe. The DJ is paid after performance validation.</div></div>
+    <div class="fcard"><div class="fcard-icon">⭐</div><div class="fcard-title">Verified Reviews</div><div class="fcard-desc">Only reviews from real bookings. Build your reputation on solid foundations.</div></div>
+    <div class="fcard"><div class="fcard-icon">📅</div><div class="fcard-title">Live Calendar</div><div class="fcard-desc">Manage your availability in real time. Venues instantly see who is available.</div></div>
+    <div class="fcard"><div class="fcard-icon">🛡️</div><div class="fcard-title">Verified Profiles</div><div class="fcard-desc">Every DJ is verified by our team. Identity, experience and references checked.</div></div>
   </div>
 </section>
 
 <section id="matching" style="background:#0a0a0a">
-  <p class="stag">Intelligence Artificielle</p>
-  <h2 class="stitle">TROUVEZ LE<br/>DJ <span style="color:var(--Y)">PARFAIT.</span></h2>
-  <p class="ssub">Décrivez votre événement et laissez notre IA sélectionner les meilleurs profils pour vous.</p>
+  <p class="stag">Artificial Intelligence</p>
+  <h2 class="stitle">FIND THE<br/><span style="color:var(--Y)">PERFECT</span> DJ.</h2>
+  <p class="ssub">Describe your event and let our AI select the best profiles for you.</p>
   <div class="twoc" style="margin-top:52px">
     <div class="ai-form">
-      <label class="aif-label">Type d'événement</label>
+      <label class="aif-label">Event Type</label>
       <select class="aif-select" id="evType">
-        <option>Soirée club</option><option>Mariage</option><option>Festival</option>
-        <option>Événement privé</option><option>Soirée corporate</option><option>Birthday party</option>
+        <option>Club Night</option><option>Wedding</option><option>Festival</option>
+        <option>Private Event</option><option>Corporate Event</option><option>Birthday Party</option>
       </select>
-      <label class="aif-label">Ambiance / Vibe</label>
-      <input class="aif-input" id="evVibe" placeholder="House & Techno, ambiance underground..."/>
+      <label class="aif-label">Vibe / Atmosphere</label>
+      <input class="aif-input" id="evVibe" placeholder="House & Techno, underground vibes..."/>
       <div class="aif-row">
         <div>
           <label class="aif-label">Budget (€)</label>
           <select class="aif-select" id="evBudget">
-            <option>Moins de 300€</option><option>300€ - 600€</option><option>600€ - 1000€</option><option>1000€+</option>
+            <option>Less than 300€</option><option>300€ - 600€</option><option>600€ - 1000€</option><option>1000€+</option>
           </select>
         </div>
         <div>
-          <label class="aif-label">Ville</label>
-          <input class="aif-input" id="evCity" placeholder="Paris, Lyon..." style="margin-bottom:0"/>
+          <label class="aif-label">City</label>
+          <input class="aif-input" id="evCity" placeholder="Paris, London..." style="margin-bottom:0"/>
         </div>
       </div>
-      <label class="aif-label" style="margin-top:14px">Détails supplémentaires</label>
-      <input class="aif-input" id="evDetails" placeholder="300 personnes, ambiance festive, fin à 5h..."/>
+      <label class="aif-label" style="margin-top:14px">Additional Details</label>
+      <input class="aif-input" id="evDetails" placeholder="300 people, festive atmosphere, ending at 5am..."/>
       <button class="brun" id="matchBtn" onclick="runMatching()">
         <div class="spin" id="matchSpin"></div>
-        <span id="matchLabel">⚡ TROUVER DES DJs →</span>
+        <span id="matchLabel">⚡ FIND DJs →</span>
       </button>
     </div>
     <div id="matchResults">
       <div class="result-placeholder">
         <div class="result-placeholder-icon">🎧</div>
-        <div class="result-placeholder-text">Vos DJs apparaîtront ici</div>
-        <div style="font-size:12px;color:#333;text-align:center;max-width:220px;line-height:1.7">Remplissez le formulaire et lancez le matching pour voir les recommandations IA.</div>
+        <div class="result-placeholder-text">Your DJs will appear here</div>
+        <div style="font-size:12px;color:#aaa;text-align:center;max-width:220px;line-height:1.7">Fill in the form and launch matching to see AI recommendations.</div>
       </div>
     </div>
   </div>
 </section>
 
 <section id="contracts">
-  <p class="stag">Contrats IA</p>
-  <h2 class="stitle">UN CONTRAT<br/>EN <span style="color:var(--Y)">30 SECONDES.</span></h2>
-  <p class="ssub">Décrivez votre prestation et obtenez un contrat professionnel complet en 10 sections.</p>
+  <p class="stag">AI Contracts</p>
+  <h2 class="stitle">A CONTRACT<br/>IN <span style="color:var(--Y)">30 SECONDS.</span></h2>
+  <p class="ssub">Describe your performance and get a complete professional contract in 10 sections.</p>
   <div class="twoc" style="margin-top:52px">
     <div class="cgen-form">
       <div class="aif-row">
-        <div><label class="aif-label">Nom du DJ *</label><input class="aif-input" id="cDJ" placeholder="DJ Maxime"/></div>
-        <div><label class="aif-label">Venue / Organisateur *</label><input class="aif-input" id="cVenue" placeholder="Club Le Rex"/></div>
+        <div><label class="aif-label">DJ Name *</label><input class="aif-input" id="cDJ" placeholder="DJ Maxime"/></div>
+        <div><label class="aif-label">Venue / Organiser *</label><input class="aif-input" id="cVenue" placeholder="Club Le Rex"/></div>
       </div>
       <div class="aif-row">
         <div><label class="aif-label">Date</label><input class="aif-input" id="cDate" type="date"/></div>
-        <div><label class="aif-label">Cachet (€)</label><input class="aif-input" id="cFee" type="number" placeholder="800"/></div>
+        <div><label class="aif-label">Fee (€)</label><input class="aif-input" id="cFee" type="number" placeholder="800"/></div>
       </div>
       <div class="aif-row">
-        <div><label class="aif-label">Début</label><input class="aif-input" id="cStart" type="time" value="23:00"/></div>
-        <div><label class="aif-label">Fin</label><input class="aif-input" id="cEnd" type="time" value="05:00"/></div>
+        <div><label class="aif-label">Start</label><input class="aif-input" id="cStart" type="time" value="23:00"/></div>
+        <div><label class="aif-label">End</label><input class="aif-input" id="cEnd" type="time" value="05:00"/></div>
       </div>
-      <label class="aif-label">Rider technique</label>
+      <label class="aif-label">Technical Rider</label>
       <input class="aif-input" id="cRider" placeholder="2x CDJ-2000 NXS2, Pioneer DJM-900..."/>
-      <label class="aif-label">Clauses spéciales</label>
-      <input class="aif-input" id="cClauses" placeholder="Loge requise, accès -1h avant..." style="margin-bottom:0"/>
+      <label class="aif-label">Special Clauses</label>
+      <input class="aif-input" id="cClauses" placeholder="Dressing room required, access 1h before..." style="margin-bottom:0"/>
       <button class="brun" id="contractBtn" onclick="runContract()" style="margin-top:14px">
         <div class="spin" id="contractSpin"></div>
-        <span id="contractLabel">📋 GÉNÉRER LE CONTRAT →</span>
+        <span id="contractLabel">📋 GENERATE CONTRACT →</span>
       </button>
     </div>
     <div>
       <div class="cgen-out" id="contractOutput">
         <div class="result-placeholder" style="height:100%">
           <div class="result-placeholder-icon">📋</div>
-          <div class="result-placeholder-text">Votre contrat ici</div>
-          <div style="font-size:12px;color:#333;text-align:center;max-width:220px;line-height:1.7">Remplissez les informations et générez votre contrat professionnel complet.</div>
+          <div class="result-placeholder-text">Your contract here</div>
+          <div style="font-size:12px;color:#aaa;text-align:center;max-width:220px;line-height:1.7">Fill in the information and generate your complete professional contract.</div>
         </div>
       </div>
       <div class="cgen-toolbar" id="contractToolbar" style="display:none">
-        <button class="ctool-btn copy" id="copyBtn" onclick="copyContract()">📋 Copier</button>
-        <button class="ctool-btn print" onclick="window.print()">🖨 Imprimer</button>
+        <button class="ctool-btn copy" id="copyBtn" onclick="copyContract()">📋 Copy</button>
+        <button class="ctool-btn print" onclick="window.print()">🖨 Print</button>
       </div>
     </div>
   </div>
 </section>
 
 <section id="pricing" style="background:#0a0a0a">
-  <p class="stag">Tarifs</p>
+  <p class="stag">Pricing</p>
   <h2 class="stitle">SIMPLE &<br/>TRANSPARENT.</h2>
-  <p class="ssub">Payez uniquement quand vous bookez. Pas de frais cachés.</p>
+  <p class="ssub">Pay only when you book. No hidden fees.</p>
   <div class="pgrid">
     <div class="pcard">
       <div class="pcard-name">Starter</div>
       <div class="pcard-price"><sup>€</sup>0<span>/mois</span></div>
-      <div class="pcard-comm">7% de commission</div>
-      <ul class="pcard-features"><li>Profil DJ complet</li><li>Accès au matching</li><li>Paiement sécurisé</li><li>Support email</li></ul>
-      <button class="pcard-btn" onclick="openAuth()">COMMENCER GRATUIT</button>
+      <div class="pcard-comm">7% commission</div>
+      <ul class="pcard-features"><li>Complete DJ profile</li><li>Matching access</li><li>Secure Payment</li><li>Email support</li></ul>
+      <button class="pcard-btn" onclick="openAuth()">START FREE</button>
     </div>
     <div class="pcard featured">
       <div class="pcard-badge">POPULAIRE</div>
       <div class="pcard-name">Pro DJ</div>
       <div class="pcard-price"><sup>€</sup>29<span>/mois</span></div>
-      <div class="pcard-comm">3% de commission</div>
-      <ul class="pcard-features"><li>Tout du Starter</li><li>Contrats IA illimités</li><li>Badge "Pro" sur le profil</li><li>Priorité dans le matching</li><li>Analytics avancés</li></ul>
-      <button class="pcard-btn" onclick="openAuth()">DEVENIR PRO</button>
+      <div class="pcard-comm">3% commission</div>
+      <ul class="pcard-features"><li>Everything in Starter</li><li>Unlimited AI contracts</li><li>"Pro" badge on profile</li><li>Priority in matching</li><li>Advanced analytics</li></ul>
+      <button class="pcard-btn" onclick="openAuth()">GO PRO</button>
     </div>
     <div class="pcard">
       <div class="pcard-name">Business</div>
       <div class="pcard-price"><sup>€</sup>149<span>/mois</span></div>
-      <div class="pcard-comm">0% de commission</div>
-      <ul class="pcard-features"><li>Tout du Pro</li><li>Commission 0%</li><li>Multi-utilisateurs</li><li>API access</li><li>Account manager dédié</li></ul>
-      <button class="pcard-btn" onclick="openAuth()">CONTACTER</button>
+      <div class="pcard-comm">0% commission</div>
+      <ul class="pcard-features"><li>Everything in Pro</li><li>0% commission</li><li>Multi-users</li><li>API access</li><li>Dedicated account manager</li></ul>
+      <button class="pcard-btn" onclick="openAuth()">CONTACT</button>
     </div>
   </div>
 </section>
 
 <section style="text-align:center;padding:100px 52px">
-  <p class="stag">Rejoignez CUE</p>
-  <h2 class="stitle" style="max-width:600px;margin:0 auto 24px">PRÊT À JOUER<br/>AU <span style="color:var(--Y)">PROCHAIN NIVEAU ?</span></h2>
-  <p style="font-size:15px;color:var(--MUTED);margin-bottom:36px;font-weight:300">100+ DJs déjà en conversation. Soyez parmi les premiers.</p>
+  <p class="stag">Join CUE</p>
+  <h2 class="stitle" style="max-width:600px;margin:0 auto 24px">READY TO PLAY<br/>THE <span style="color:var(--Y)">NEXT LEVEL?</span></h2>
+  <p style="font-size:15px;color:var(--MUTED);margin-bottom:36px;font-weight:300">100+ DJs already on board. Be among the first.</p>
   <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-    <button class="bh y" onclick="openAuthAs('dj')">🎧 Je suis DJ</button>
-    <button class="bh o" onclick="openAuthAs('venue')">🏢 Je suis Venue</button>
+    <button class="bh y" onclick="openAuthAs('dj')">🎧 I am a DJ</button>
+    <button class="bh o" onclick="openAuthAs('venue')">🏢 I am a Venue</button>
   </div>
 </section>
 
 <footer>
   <div class="fbrand">
     <svg width="42" height="42" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
-    <p>La plateforme qui connecte les DJs talentueux avec les venues qui en ont besoin.</p>
+    <p>The platform connecting talented DJs with the venues that need them.</p>
   </div>
-  <div class="fcol"><h5>Plateforme</h5><ul><li><a href="#features">Fonctionnalités</a></li><li><a href="#matching">AI Matching</a></li><li><a href="#contracts">Contrats</a></li><li><a href="#pricing">Tarifs</a></li></ul></div>
-  <div class="fcol"><h5>Entreprise</h5><ul><li><a href="#">À propos</a></li><li><a href="#">Blog</a></li><li><a href="#">Presse</a></li><li><a href="/cdn-cgi/l/email-protection#402335256e242a6e21303000272d21292c6e232f2d">Contact</a></li></ul></div>
+  <div class="fcol"><h5>Platform</h5><ul><li><a href="#features">Features</a></li><li><a href="#matching">AI Matching</a></li><li><a href="#contracts">Contracts</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+  <div class="fcol"><h5>Company</h5><ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Press</a></li><li><a href="/cdn-cgi/l/email-protection#402335256e242a6e21303000272d21292c6e232f2d">Contact</a></li></ul></div>
   <div class="fcol"><h5>Contact</h5><ul><li><a href="/cdn-cgi/l/email-protection#147761713a707e3a756464547379757d783a777b79"><span class="__cf_email__" data-cfemail="9bf8eefeb5fff1b5faebebdbfcf6faf2f7b5f8f4f6">[email&#160;protected]</span></a></li><li><a href="tel:+33767011532">+33 7 67 01 15 32</a></li><li><a href="#">@cuedjapp</a></li></ul></div>
 </footer>
 <div class="fbot">
-  <span>© 2025 CUE. Tous droits réservés.</span>
+  <span>© 2025 CUE. All rights reserved.</span>
   <span style="cursor:pointer;color:#111" onclick="showModoLogin()">⚙</span>
 </div>
 
@@ -649,25 +649,25 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
     <a href="#" onclick="goHome()" style="display:flex;align-items:center"><svg class="logo-svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></a>
     <div style="display:flex;align-items:center;gap:16px">
       <div class="dash-user"><div class="dash-avatar" id="djAvatar">D</div><div><div class="dash-name" id="djName">DJ</div><div class="dash-role">DJ · Pro</div></div></div>
-      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </nav>
-  <div class="dash-header"><div><div class="dash-title">MY <span>STAGE</span></div><div style="font-size:12px;color:var(--MUTED);margin-top:6px">Tableau de bord DJ · CUE Platform</div></div></div>
+  <div class="dash-header"><div><div class="dash-title">MY <span>STAGE</span></div><div style="font-size:12px;color:var(--MUTED);margin-top:6px">DJ Dashboard · CUE Platform</div></div></div>
   <div class="dash-grid">
-    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Bookings actifs</div></div>
-    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Revenus ce mois</div></div>
-    <div class="dstat"><div class="dstat-val">—</div><div class="dstat-label">Note moyenne</div></div>
-    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Vues profil</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Active bookings</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Revenue this month</div></div>
+    <div class="dstat"><div class="dstat-val">—</div><div class="dstat-label">Average rating</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Profile views</div></div>
   </div>
   <div class="dash-section">
-    <div class="dsec-title">Actions rapides</div>
+    <div class="dsec-title">Quick actions</div>
     <div class="dash-cards">
-      <div class="dcard" onclick="scrollToContract()"><div class="dcard-icon">📋</div><div class="dcard-title">Générer un contrat</div><div class="dcard-desc">Contrat IA complet en 30 secondes</div><div class="dcard-badge">IA</div></div>
-      <div class="dcard"><div class="dcard-icon">👤</div><div class="dcard-title">Mon profil</div><div class="dcard-desc">Modifier biographie, genres, photos</div></div>
-      <div class="dcard"><div class="dcard-icon">📅</div><div class="dcard-title">Mes bookings</div><div class="dcard-desc">Gérer vos confirmations et demandes</div></div>
-      <div class="dcard"><div class="dcard-icon">💰</div><div class="dcard-title">Paiements</div><div class="dcard-desc">Historique et relevés de compte</div></div>
-      <div class="dcard"><div class="dcard-icon">📊</div><div class="dcard-title">Analytics</div><div class="dcard-desc">Vues, clics et performances profil</div></div>
-      <div class="dcard"><div class="dcard-icon">⚙️</div><div class="dcard-title">Paramètres</div><div class="dcard-desc">Notifications, sécurité, abonnement</div></div>
+      <div class="dcard" onclick="scrollToContract()"><div class="dcard-icon">📋</div><div class="dcard-title">Generate a contract</div><div class="dcard-desc">Complete AI contract in 30 seconds</div><div class="dcard-badge">IA</div></div>
+      <div class="dcard"><div class="dcard-icon">👤</div><div class="dcard-title">My profile</div><div class="dcard-desc">Edit biography, genres, photos</div></div>
+      <div class="dcard"><div class="dcard-icon">📅</div><div class="dcard-title">My bookings</div><div class="dcard-desc">Manage your confirmations and requests</div></div>
+      <div class="dcard"><div class="dcard-icon">💰</div><div class="dcard-title">Payments</div><div class="dcard-desc">History and account statements</div></div>
+      <div class="dcard"><div class="dcard-icon">📊</div><div class="dcard-title">Analytics</div><div class="dcard-desc">Views, clicks and profile performance</div></div>
+      <div class="dcard"><div class="dcard-icon">⚙️</div><div class="dcard-title">Settings</div><div class="dcard-desc">Notifications, security, subscription</div></div>
     </div>
   </div>
 </div>
@@ -677,25 +677,25 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
     <a href="#" onclick="goHome()" style="display:flex;align-items:center"><svg class="logo-svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg></a>
     <div style="display:flex;align-items:center;gap:16px">
       <div class="dash-user"><div class="dash-avatar" id="venueAvatar">V</div><div><div class="dash-name" id="venueName">Venue</div><div class="dash-role">Venue · Pro</div></div></div>
-      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </nav>
-  <div class="dash-header"><div><div class="dash-title">MY <span>VENUE</span></div><div style="font-size:12px;color:var(--MUTED);margin-top:6px">Tableau de bord Venue · CUE Platform</div></div></div>
+  <div class="dash-header"><div><div class="dash-title">MY <span>VENUE</span></div><div style="font-size:12px;color:var(--MUTED);margin-top:6px">Venue Dashboard · CUE Platform</div></div></div>
   <div class="dash-grid">
-    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Événements actifs</div></div>
-    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">DJs bookés</div></div>
-    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">En attente</div></div>
-    <div class="dstat"><div class="dstat-val">—</div><div class="dstat-label">Budget utilisé</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Active events</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Booked DJs</div></div>
+    <div class="dstat"><div class="dstat-val">0</div><div class="dstat-label">Pending</div></div>
+    <div class="dstat"><div class="dstat-val">—</div><div class="dstat-label">Budget used</div></div>
   </div>
   <div class="dash-section">
-    <div class="dsec-title">Actions rapides</div>
+    <div class="dsec-title">Quick actions</div>
     <div class="dash-cards">
-      <div class="dcard" onclick="scrollToMatching()"><div class="dcard-icon">🎯</div><div class="dcard-title">Trouver un DJ</div><div class="dcard-desc">Matching IA par vibe, budget, style</div><div class="dcard-badge">IA</div></div>
-      <div class="dcard" onclick="scrollToContract()"><div class="dcard-icon">📋</div><div class="dcard-title">Générer un contrat</div><div class="dcard-desc">Contrat professionnel en 30 secondes</div><div class="dcard-badge">IA</div></div>
-      <div class="dcard"><div class="dcard-icon">📅</div><div class="dcard-title">Mes bookings</div><div class="dcard-desc">Gérer vos événements et confirmations</div></div>
-      <div class="dcard"><div class="dcard-icon">🏢</div><div class="dcard-title">Mon venue</div><div class="dcard-desc">Modifier fiche technique et équipements</div></div>
-      <div class="dcard"><div class="dcard-icon">💳</div><div class="dcard-title">Paiements</div><div class="dcard-desc">Factures et historique des transactions</div></div>
-      <div class="dcard"><div class="dcard-icon">⚙️</div><div class="dcard-title">Paramètres</div><div class="dcard-desc">Notifications, sécurité, abonnement</div></div>
+      <div class="dcard" onclick="scrollToMatching()"><div class="dcard-icon">🎯</div><div class="dcard-title">Find a DJ</div><div class="dcard-desc">AI matching by vibe, budget, style</div><div class="dcard-badge">IA</div></div>
+      <div class="dcard" onclick="scrollToContract()"><div class="dcard-icon">📋</div><div class="dcard-title">Generate a contract</div><div class="dcard-desc">Professional contract in 30 seconds</div><div class="dcard-badge">IA</div></div>
+      <div class="dcard"><div class="dcard-icon">📅</div><div class="dcard-title">My bookings</div><div class="dcard-desc">Manage your events and confirmations</div></div>
+      <div class="dcard"><div class="dcard-icon">🏢</div><div class="dcard-title">My venue</div><div class="dcard-desc">Edit technical sheet and equipment</div></div>
+      <div class="dcard"><div class="dcard-icon">💳</div><div class="dcard-title">Payments</div><div class="dcard-desc">Invoices and transaction history</div></div>
+      <div class="dcard"><div class="dcard-icon">⚙️</div><div class="dcard-title">Settings</div><div class="dcard-desc">Notifications, security, subscription</div></div>
     </div>
   </div>
 </div>
@@ -705,14 +705,14 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
 <div class="cwin" id="cwin">
   <div class="chin">
     <svg width="28" height="28" viewBox="0 0 100 100"><rect width="100" height="100" rx="16" fill="#FFC300"/><circle cx="50" cy="50" r="34" fill="none" stroke="#111" stroke-width="6"/><text x="50" y="59" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-size="24" font-weight="900" fill="#111">cue</text></svg>
-    <div class="chin-info"><h4>CUE Support</h4><p>Assistant IA · FAQ intégrée ●</p></div>
+    <div class="chin-info"><h4>CUE Support</h4><p>AI Assistant · Built-in FAQ ●</p></div>
     <button class="cclose" onclick="toggleChat()">✕</button>
   </div>
   <div class="cmsgs" id="cmsgs">
-    <div class="cmsg bot">Bonjour ! 👋 Je suis l'assistant CUE. Je réponds à toutes vos questions sur la plateforme. Comment puis-je vous aider ?</div>
+    <div class="cmsg bot">Hello! 👋 I'm MAX, the CUE assistant. I answer all your questions about the platform. How can I help you?</div>
   </div>
   <div class="cinrow">
-    <input class="cinput" id="cinput" placeholder="Votre question..." onkeydown="if(event.key==='Enter')sendChat()"/>
+    <input class="cinput" id="cinput" placeholder="Your question..." onkeydown="if(event.key==='Enter')sendChat()"/>
     <button class="csend" id="csend" onclick="sendChat()">↑</button>
   </div>
 </div>
@@ -745,7 +745,7 @@ function selectRole(role){
   selectedRole=role;
   document.getElementById('optDJ').classList.toggle('sel',role==='dj');
   document.getElementById('optVenue').classList.toggle('sel',role==='venue');
-  document.getElementById('roleTag').textContent=role==='dj'?'🎧 Connexion DJ':'🏢 Connexion Venue';
+  document.getElementById('roleTag').textContent=role==='dj'?'🎧 DJ Login':'🏢 Venue Login';
   document.getElementById('stepRole').style.display='none';
   document.getElementById('stepLogin').style.display='block';
   setTimeout(()=>document.getElementById('loginEmail').focus(),80);
@@ -773,7 +773,7 @@ function doLogin(){
     document.getElementById('venueName').textContent=user.name;
     document.getElementById('venueAvatar').textContent=user.name[0].toUpperCase();
   }
-  document.getElementById('navCta').innerHTML=`<button class="logout-btn" onclick="logout()">Déconnexion</button>`;
+  document.getElementById('navCta').innerHTML=`<button class="logout-btn" onclick="logout()">Logout</button>`;
   window.scrollTo(0,0);
 }
 function logout(){
@@ -781,7 +781,7 @@ function logout(){
   document.getElementById('dashDJ').classList.remove('active');
   document.getElementById('dashVenue').classList.remove('active');
   document.getElementById('mainSite').style.display='block';
-  document.getElementById('navCta').innerHTML=`<button class="bg" onclick="openAuth()">Connexion</button><button class="bp" onclick="openAuth()">Rejoindre CUE</button>`;
+  document.getElementById('navCta').innerHTML=`<button class="bg" onclick="openAuth()">Login</button><button class="bp" onclick="openAuth()">Join CUE</button>`;
   window.scrollTo(0,0);
 }
 function goHome(){
@@ -809,8 +809,8 @@ async function runMatching(){
 
   btn.disabled=true;
   spin.classList.add('on');
-  lab.textContent='Recherche en cours...';
-  out.innerHTML='<div class="result-placeholder"><div class="result-placeholder-icon pulsing">🎧</div><div class="result-placeholder-text pulsing">Analyse en cours...</div></div>';
+  lab.textContent='Searching...';
+  out.innerHTML='<div class="result-placeholder"><div class="result-placeholder-icon pulsing">🎧</div><div class="result-placeholder-text pulsing">Analysing...</div></div>';
 
   const payload={
     type:document.getElementById('evType').value,
@@ -840,7 +840,7 @@ async function runMatching(){
         <div style="text-align:right;flex-shrink:0">
           <div class="dj-match">${d.match}%</div>
           <div class="dj-match-label">Match</div>
-          <button class="bp" style="margin-top:10px;padding:6px 14px;font-size:11px" onclick="openAuth()">BOOKER</button>
+          <button class="bp" style="margin-top:10px;padding:6px 14px;font-size:11px" onclick="openAuth()">BOOK</button>
         </div>
       </div>`).join('')+'</div>';
   }catch(e){
@@ -848,7 +848,7 @@ async function runMatching(){
   }
   btn.disabled=false;
   spin.classList.remove('on');
-  lab.textContent='⚡ TROUVER DES DJs →';
+  lab.textContent='⚡ FIND DJs →';
 }
 
 // ══════════════════════════════════════════════════════
@@ -868,7 +868,7 @@ async function runContract(){
 
   btn.disabled=true;
   spin.classList.add('on');
-  lab.textContent='Génération...';
+  lab.textContent='Generating...';
   toolbar.style.display='none';
   out.innerHTML='<div style="text-align:center;padding:40px;color:var(--MUTED)" class="pulsing">⚡ Génération du contrat en cours...</div>';
 
@@ -895,7 +895,7 @@ async function runContract(){
     contractText=data.contract_text;
     const text=contractText;
 
-    let html='<div style="text-align:center;margin-bottom:28px"><div style="font-family:var(--D);font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:1px">CONTRAT DE PRESTATION DJ</div><div style="font-size:10px;color:var(--MUTED);letter-spacing:2px;text-transform:uppercase;margin-top:6px">CUE Platform · '+new Date().toLocaleDateString('fr-FR')+'</div></div>';
+    let html='<div style="text-align:center;margin-bottom:28px"><div style="font-family:var(--D);font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:1px">DJ PERFORMANCE CONTRACT</div><div style="font-size:10px;color:var(--MUTED);letter-spacing:2px;text-transform:uppercase;margin-top:6px">CUE Platform · '+new Date().toLocaleDateString('fr-FR')+'</div></div>';
     const re=/###SECTION_\d+:\s*([^#]+)###([\s\S]*?)(?=###SECTION_|\s*$)/g;
     let m,found=false;
     while((m=re.exec(text))!==null){
@@ -913,14 +913,14 @@ async function runContract(){
   }
   btn.disabled=false;
   spin.classList.remove('on');
-  lab.textContent='📋 GÉNÉRER LE CONTRAT →';
+  lab.textContent='📋 GENERATE CONTRACT →';
 }
 
 function copyContract(){
   navigator.clipboard?.writeText(contractText);
   const btn=document.getElementById('copyBtn');
-  btn.textContent='✓ Copié !';btn.style.color='#00c864';
-  setTimeout(()=>{btn.textContent='📋 Copier';btn.style.color='';},2000);
+  btn.textContent='✓ Copied!';btn.style.color='#00c864';
+  setTimeout(()=>{btn.textContent='📋 Copy';btn.style.color='';},2000);
 }
 
 // ══════════════════════════════════════════════════════
@@ -980,11 +980,11 @@ async function sendChat(){
 // MODERATOR
 // ══════════════════════════════════════════════════════
 let FAQ_DATA=[
-  {q:"Je ne parviens pas à me connecter",r:"Vérifiez votre email et mot de passe. Utilisez « Mot de passe oublié » si nécessaire."},
+  {q:"Je ne parviens pas à me connecter",r:"Vérifiez votre email et mot de passe. Utilisez « Password oublié » si nécessaire."},
   {q:"Je n'ai pas reçu l'email de validation",r:"Vérifiez vos courriers indésirables. Renvoyez l'email depuis la page de connexion."},
-  {q:"Comment réinitialiser mon mot de passe ?",r:"Cliquez sur « Mot de passe oublié », entrez votre email et suivez les instructions."},
-  {q:"Comment modifier mes informations personnelles ?",r:"Profil → Paramètres → Modifier les informations."},
-  {q:"Comment supprimer mon compte ?",r:"Paramètres → Confidentialité → Supprimer mon compte."},
+  {q:"Comment réinitialiser mon mot de passe ?",r:"Cliquez sur « Password oublié », entrez votre email et suivez les instructions."},
+  {q:"Comment modifier mes informations personnelles ?",r:"Profil → Settings → Edit les informations."},
+  {q:"Comment supprimer mon compte ?",r:"Settings → Confidentialité → Supprimer mon compte."},
   {q:"Pourquoi vérifier mon identité ?",r:"La vérification sécurise les transactions et assure la fiabilité des utilisateurs."},
   {q:"Combien de temps prend la vérification ?",r:"Quelques minutes en général. Un contrôle manuel peut parfois prolonger le délai."},
   {q:"Ma vérification est refusée, que faire ?",r:"Vérifiez la qualité et validité de vos documents, puis soumettez à nouveau."},
@@ -993,7 +993,7 @@ let FAQ_DATA=[
   {q:"Comment optimiser mon profil DJ ?",r:"Ajoutez biographie, genres musicaux, références, extraits audio et disponibilités."},
   {q:"Puis-je sélectionner plusieurs styles musicaux ?",r:"Oui, assurez-vous qu'ils correspondent à votre univers artistique."},
   {q:"Comment augmenter mes chances d'être sélectionné ?",r:"Profil complet, avis positifs, et respect de vos engagements."},
-  {q:"Mon profil est en attente de validation",r:"Une vérification qualité est en cours. Cela prend généralement quelques minutes."},
+  {q:"My profile est en attente de validation",r:"Une vérification qualité est en cours. Cela prend généralement quelques minutes."},
   {q:"Comment gérer mes disponibilités ?",r:"Tableau de bord → section Calendrier → mettez à jour vos dates."},
   {q:"Comment créer un profil venue ?",r:"Sélectionnez « Venue » à l'inscription, complétez : localisation, capacité, styles et fiche technique."},
   {q:"Comment préciser les équipements disponibles ?",r:"Dans la fiche technique : audio, DJ booth, éclairage et contraintes horaires."},
