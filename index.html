@@ -278,18 +278,49 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
 @media(max-width:900px){
   nav{padding:12px 18px}.nav-links{display:none}
   section{padding:60px 18px}.hero{padding:0 18px 60px}
-  h1{font-size:clamp(52px,14vw,100px)}
+  h1{font-size:clamp(48px,13vw,90px);letter-spacing:-1px}
   .twoc{grid-template-columns:1fr;gap:28px}
   .fg3{grid-template-columns:1fr}
-  .pgrid{grid-template-columns:1fr;max-width:320px}
-  footer{grid-template-columns:1fr 1fr;padding:32px 18px}.fbot{padding:14px 18px}
-  .hstats{gap:24px}
-  .cwin{right:10px;width:calc(100vw - 20px)}
+  .pgrid{grid-template-columns:1fr;max-width:100%;gap:12px}
+  footer{grid-template-columns:1fr 1fr;padding:32px 18px}.fbot{padding:14px 18px;flex-direction:column;gap:8px;text-align:center}
+  .hstats{gap:18px;flex-wrap:wrap;justify-content:center}
+  .hstat-val{font-size:32px}
+  .cwin{right:8px;left:8px;width:auto;bottom:80px}
+  .chat-fab{bottom:16px;right:16px;width:48px;height:48px}
   .dash-grid{grid-template-columns:repeat(2,1fr)}.dash-cards{grid-template-columns:1fr 1fr}
-  .dashboard{padding:80px 18px 50px}
-  .amodal{padding:32px 22px}
+  .dashboard{padding:80px 14px 50px}
+  .amodal{padding:28px 16px;width:95vw}
   .mstat-row{grid-template-columns:repeat(2,1fr)}
-  .modo-body{padding:20px 14px}
+  .modo-body{padding:16px 12px}
+  .hbar{flex-direction:column;align-items:center;gap:10px}
+  .bh{width:100%;max-width:280px;text-align:center;padding:14px 20px}
+  .ai-form{padding:20px 16px}
+  .cgen-form{padding:20px 16px}
+  .aif-row{grid-template-columns:1fr}
+  .pcard{padding:24px 18px}
+  .fcard{padding:24px 20px}
+}
+
+@media(max-width:480px){
+  h1{font-size:clamp(38px,11vw,60px)}
+  .hey{font-size:10px;letter-spacing:3px}
+  .hsub{font-size:14px}
+  .hstats{gap:12px}
+  .hstat-val{font-size:26px}
+  .stitle{font-size:clamp(30px,9vw,48px)}
+  .bh{font-size:15px;padding:12px 18px}
+  .dash-cards{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .dstat-val{font-size:28px}
+  footer{grid-template-columns:1fr;gap:24px}
+  .fcol{display:none}
+  .amodal{padding:24px 14px}
+  .pcard-price{font-size:40px}
+  .modo-nav{padding:0 12px}
+  .mtab{padding:0 8px;font-size:9px}
+  .cwin{right:4px;left:4px}
+  .pgrid{max-width:100%}
+  .hbar .bh{font-size:14px}
 }
 
 @media print{
@@ -327,7 +358,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
         <div class="spin" id="loginSpin"></div>
         <span id="loginLabel">SE CONNECTER →</span>
       </button>
-      <p style="font-size:10px;color:var(--MUTED);text-align:center;margin-top:14px">Pas de compte ? <a href="mailto:cue.dj.app@gmail.com" style="color:var(--Y)">Contactez-nous</a></p>
+      <p style="font-size:10px;color:var(--MUTED);text-align:center;margin-top:14px">Pas de compte ? <a href="/cdn-cgi/l/email-protection#e2819787cc8688cc839292a2858f838b8ecc818d8f" style="color:var(--Y)">Contactez-nous</a></p>
     </div>
   </div>
 </div>
@@ -378,7 +409,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
           <div><div style="font-size:14px;font-weight:700;color:#fff">Stanislas Kleb</div><div style="font-size:10px;color:var(--Y);letter-spacing:1.5px;text-transform:uppercase">Administrateur</div></div>
         </div>
         <div style="font-size:11px;color:var(--MUTED);line-height:2.2">
-          <div>📧 stanislas.kleb@outlook.com</div><div>📱 +33 7 67 01 15 32</div><div>🔑 Accès complet</div>
+          <div>📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7a090e1b141309161b095411161f183a150f0e1615151154191517">[email&#160;protected]</a></div><div>📱 +33 7 67 01 15 32</div><div>🔑 Accès complet</div>
         </div>
       </div>
     </div>
@@ -386,9 +417,9 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
       <div class="msec-title">Utilisateurs</div><div class="msec-sub">Gestion des comptes DJ et Venue</div>
       <div class="mtable">
         <div class="mth" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span>Utilisateur</span><span>Type</span><span>Statut</span><span>Inscrit</span><span>Actions</span></div>
-        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Lorenzo B.<div style="font-size:10px;color:#333;font-weight:400">lorenzo@cue.com</div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge active">Actif</span></span><span>01/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
-        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Club Le Rex<div style="font-size:10px;color:#333;font-weight:400">rex@lerex.fr</div></span><span><span class="mbadge venue">Venue</span></span><span><span class="mbadge active">Actif</span></span><span>15/02/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
-        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">DJ Maxime<div style="font-size:10px;color:#333;font-weight:400">maxime@dj.com</div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge pending">En attente</span></span><span>08/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Lorenzo B.<div style="font-size:10px;color:#333;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="89e5e6fbece7f3e6c9eafceca7eae6e4">[email&#160;protected]</a></div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge active">Actif</span></span><span>01/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">Club Le Rex<div style="font-size:10px;color:#333;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c2e39241c30392e3924723a2e">[email&#160;protected]</a></div></span><span><span class="mbadge venue">Venue</span></span><span><span class="mbadge active">Actif</span></span><span>15/02/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
+        <div class="mtr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span class="nm">DJ Maxime<div style="font-size:10px;color:#333;font-weight:400"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b262a3322262e0b2f2165282426">[email&#160;protected]</a></div></span><span><span class="mbadge dj">DJ</span></span><span><span class="mbadge pending">En attente</span></span><span>08/03/25</span><span style="gap:6px"><button class="mact warn">Avert.</button><button class="mact ban">Ban</button></span></div>
       </div>
     </div>
     <div class="msec" id="m-logs">
@@ -407,7 +438,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
         <div class="srow"><div class="srow-label">Suggestions rapides</div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
       </div>
       <div class="scard"><h4>Sécurité</h4>
-        <div class="srow"><div class="srow-label">Compte modérateur</div><span style="font-size:12px;color:var(--Y)">stanislas.kleb@outlook.com</span></div>
+        <div class="srow"><div class="srow-label">Compte modérateur</div><span style="font-size:12px;color:var(--Y)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd8e899c93948e919c8ed39691989fbd92888991929296d39e9290">[email&#160;protected]</a></span></div>
         <div class="srow"><div class="srow-label">Changer le mot de passe</div><button class="mact warn" onclick="alert('Disponible en production')">Modifier</button></div>
       </div>
     </div>
@@ -602,8 +633,8 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
     <p>La plateforme qui connecte les DJs talentueux avec les venues qui en ont besoin.</p>
   </div>
   <div class="fcol"><h5>Plateforme</h5><ul><li><a href="#features">Fonctionnalités</a></li><li><a href="#matching">AI Matching</a></li><li><a href="#contracts">Contrats</a></li><li><a href="#pricing">Tarifs</a></li></ul></div>
-  <div class="fcol"><h5>Entreprise</h5><ul><li><a href="#">À propos</a></li><li><a href="#">Blog</a></li><li><a href="#">Presse</a></li><li><a href="mailto:cue.dj.app@gmail.com">Contact</a></li></ul></div>
-  <div class="fcol"><h5>Contact</h5><ul><li><a href="mailto:cue.dj.app@gmail.com">cue.dj.app@gmail.com</a></li><li><a href="tel:+33767011532">+33 7 67 01 15 32</a></li><li><a href="#">@cuedjapp</a></li></ul></div>
+  <div class="fcol"><h5>Entreprise</h5><ul><li><a href="#">À propos</a></li><li><a href="#">Blog</a></li><li><a href="#">Presse</a></li><li><a href="/cdn-cgi/l/email-protection#402335256e242a6e21303000272d21292c6e232f2d">Contact</a></li></ul></div>
+  <div class="fcol"><h5>Contact</h5><ul><li><a href="/cdn-cgi/l/email-protection#147761713a707e3a756464547379757d783a777b79"><span class="__cf_email__" data-cfemail="9bf8eefeb5fff1b5faebebdbfcf6faf2f7b5f8f4f6">[email&#160;protected]</span></a></li><li><a href="tel:+33767011532">+33 7 67 01 15 32</a></li><li><a href="#">@cuedjapp</a></li></ul></div>
 </footer>
 <div class="fbot">
   <span>© 2025 CUE. Tous droits réservés.</span>
@@ -686,11 +717,11 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════
 // CONFIG — ⚠️ Changez cette URL avant de déployer en production
 // ══════════════════════════════════════════════════════
-const API_BASE = 'https://cue-backend-c1x8.onrender.com';
+const API_BASE = 'http://127.0.0.1:8001';
 
 // ══════════════════════════════════════════════════════
 // AUTH
@@ -1005,31 +1036,4 @@ function renderFAQEditor(){
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaqItem(${i})">
         <span><span class="faq-q-num">${String(i+1).padStart(2,'0')}.</span><span class="faq-q-text">${f.q}</span></span>
-        <span id="faq-arr-${i}" style="color:#333;font-size:16px">›</span>
-      </div>
-      <div class="faq-body" id="faq-body-${i}">
-        <textarea class="faq-answer" id="faq-ans-${i}" rows="3">${f.r}</textarea>
-        <div style="display:flex;align-items:center">
-          <button class="faq-save" onclick="saveFaqItem(${i})">Enregistrer</button>
-          <span class="save-ok" id="faq-ok-${i}">✓ Sauvegardé</span>
-        </div>
-      </div>
-    </div>`).join('');
-}
-function toggleFaqItem(i){
-  const b=document.getElementById('faq-body-'+i);
-  const a=document.getElementById('faq-arr-'+i);
-  const open=b.classList.toggle('open');
-  a.textContent=open?'˅':'›';a.style.color=open?'#FFC300':'#333';
-}
-function saveFaqItem(i){
-  const v=document.getElementById('faq-ans-'+i).value.trim();
-  if(!v)return;FAQ_DATA[i].r=v;
-  const ok=document.getElementById('faq-ok-'+i);
-  ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);
-}
-// Warm up backend
-fetch("https://cue-backend-c1x8.onrender.com/ping").catch(()=>{});
-</script>
-</body>
-</html>
+        <span id="faq-arr-${i}" style="color:#333;fon
