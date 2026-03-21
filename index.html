@@ -1061,4 +1061,31 @@ function renderFAQEditor(){
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaqItem(${i})">
         <span><span class="faq-q-num">${String(i+1).padStart(2,'0')}.</span><span class="faq-q-text">${f.q}</span></span>
-        <span id="faq-arr-${i}" style="color:#333;fon
+        <span id="faq-arr-${i}" style="color:#333;font-size:16px">›</span>
+      </div>
+      <div class="faq-body" id="faq-body-${i}">
+        <textarea class="faq-answer" id="faq-ans-${i}" rows="3">${f.r}</textarea>
+        <div style="display:flex;align-items:center">
+          <button class="faq-save" onclick="saveFaqItem(${i})">Save</button>
+          <span class="save-ok" id="faq-ok-${i}">✓ Saved</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleFaqItem(i){
+  const b=document.getElementById('faq-body-'+i);
+  const a=document.getElementById('faq-arr-'+i);
+  const open=b.classList.toggle('open');
+  a.textContent=open?'˅':'›';a.style.color=open?'#FFC300':'#333';
+}
+function saveFaqItem(i){
+  const v=document.getElementById('faq-ans-'+i).value.trim();
+  if(!v)return;FAQ_DATA[i].r=v;
+  const ok=document.getElementById('faq-ok-'+i);
+  ok.style.display='inline';setTimeout(()=>ok.style.display='none',2000);
+}
+// Warm up backend
+fetch('https://cue-backend-c1x8.onrender.com/ping').catch(()=>{});
+</script>
+</body>
+</html>
