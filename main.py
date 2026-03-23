@@ -241,3 +241,23 @@ Cachet: {payload.fee}€ | Acompte: {deposit}€ | Solde: {balance}€ | Rider: 
         return {"contract_text": message.content[0].text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Keep-alive background task ────────────────────────
+import asyncio
+import httpx
+
+async def keep_alive():
+    """Ping self every 10 minutes to prevent sleep."""
+    await asyncio.sleep(60)  # wait 1 min after startup
+    while True:
+        try:
+            async with httpx.AsyncClient() as client:
+                await client.get("https://cue-backend-c1x8.onrender.com/ping", timeout=10)
+        except Exception:
+            pass
+        await asyncio.sleep(600)  # every 10 minutes
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(keep_alive())
