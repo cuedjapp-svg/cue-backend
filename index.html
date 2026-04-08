@@ -512,40 +512,12 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
   <p class="stag">Artificial Intelligence</p>
   <h2 class="stitle">FIND THE<br/><span style="color:var(--Y)">PERFECT</span> DJ.</h2>
   <p class="ssub">Describe your event and let our AI select the best profiles for you.</p>
-  <div class="twoc" style="margin-top:52px">
-    <div class="ai-form">
-      <label class="aif-label">Event Type</label>
-      <select class="aif-select" id="evType">
-        <option>Club Night</option><option>Wedding</option><option>Festival</option>
-        <option>Private Event</option><option>Corporate Event</option><option>Birthday Party</option>
-      </select>
-      <label class="aif-label">Vibe / Atmosphere</label>
-      <input class="aif-input" id="evVibe" placeholder="House & Techno, underground vibes..."/>
-      <div class="aif-row">
-        <div>
-          <label class="aif-label">Budget (€)</label>
-          <select class="aif-select" id="evBudget">
-            <option>Less than 300€</option><option>300€ - 600€</option><option>600€ - 1000€</option><option>1000€+</option>
-          </select>
-        </div>
-        <div>
-          <label class="aif-label">City</label>
-          <input class="aif-input" id="evCity" placeholder="Paris, London..." style="margin-bottom:0"/>
-        </div>
-      </div>
-      <label class="aif-label" style="margin-top:14px">Additional Details</label>
-      <input class="aif-input" id="evDetails" placeholder="300 people, festive atmosphere, ending at 5am..."/>
-      <button class="brun" id="matchBtn" onclick="runMatching()">
-        <div class="spin" id="matchSpin"></div>
-        <span id="matchLabel">⚡ FIND DJs →</span>
-      </button>
-    </div>
-    <div id="matchResults">
-      <div class="result-placeholder">
-        <div class="result-placeholder-icon">🎧</div>
-        <div class="result-placeholder-text">Your DJs will appear here</div>
-        <div style="font-size:12px;color:#aaa;text-align:center;max-width:220px;line-height:1.7">Fill in the form and launch matching to see AI recommendations.</div>
-      </div>
+  <div style="margin-top:52px;text-align:center">
+    <div style="background:var(--CARD);border:1px solid var(--BORDER);padding:60px 40px;max-width:600px;margin:0 auto">
+      <div style="font-size:64px;margin-bottom:20px">🎯</div>
+      <h3 style="font-family:var(--D);font-size:28px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:12px">AI MATCHING</h3>
+      <p style="font-size:14px;color:var(--MUTED);line-height:1.7;margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto">Our algorithm analyzes vibe, budget and style to find the perfect DJ for your event. Create a free account to access this feature.</p>
+      <button class="bh y" onclick="window.location.href='inscription.html'" style="margin:0 auto">🚀 CREATE FREE ACCOUNT</button>
     </div>
   </div>
 </section>
@@ -554,41 +526,12 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
   <p class="stag">AI Contracts</p>
   <h2 class="stitle">A CONTRACT<br/>IN <span style="color:var(--Y)">30 SECONDS.</span></h2>
   <p class="ssub">Describe your performance and get a complete professional contract in 10 sections.</p>
-  <div class="twoc" style="margin-top:52px">
-    <div class="cgen-form">
-      <div class="aif-row">
-        <div><label class="aif-label">DJ Name *</label><input class="aif-input" id="cDJ" placeholder="DJ Maxime"/></div>
-        <div><label class="aif-label">Venue / Organiser *</label><input class="aif-input" id="cVenue" placeholder="Club Le Rex"/></div>
-      </div>
-      <div class="aif-row">
-        <div><label class="aif-label">Date</label><input class="aif-input" id="cDate" type="date"/></div>
-        <div><label class="aif-label">Fee (€)</label><input class="aif-input" id="cFee" type="number" placeholder="800"/></div>
-      </div>
-      <div class="aif-row">
-        <div><label class="aif-label">Start</label><input class="aif-input" id="cStart" type="time" value="23:00"/></div>
-        <div><label class="aif-label">End</label><input class="aif-input" id="cEnd" type="time" value="05:00"/></div>
-      </div>
-      <label class="aif-label">Technical Rider</label>
-      <input class="aif-input" id="cRider" placeholder="2x CDJ-2000 NXS2, Pioneer DJM-900..."/>
-      <label class="aif-label">Special Clauses</label>
-      <input class="aif-input" id="cClauses" placeholder="Dressing room required, access 1h before..." style="margin-bottom:0"/>
-      <button class="brun" id="contractBtn" onclick="runContract()" style="margin-top:14px">
-        <div class="spin" id="contractSpin"></div>
-        <span id="contractLabel">📋 GENERATE CONTRACT →</span>
-      </button>
-    </div>
-    <div>
-      <div class="cgen-out" id="contractOutput">
-        <div class="result-placeholder" style="height:100%">
-          <div class="result-placeholder-icon">📋</div>
-          <div class="result-placeholder-text">Your contract here</div>
-          <div style="font-size:12px;color:#aaa;text-align:center;max-width:220px;line-height:1.7">Fill in the information and generate your complete professional contract.</div>
-        </div>
-      </div>
-      <div class="cgen-toolbar" id="contractToolbar" style="display:none">
-        <button class="ctool-btn copy" id="copyBtn" onclick="copyContract()">📋 Copy</button>
-        <button class="ctool-btn print" onclick="window.print()">🖨 Print</button>
-      </div>
+  <div style="margin-top:52px;text-align:center">
+    <div style="background:var(--CARD);border:1px solid var(--BORDER);padding:60px 40px;max-width:600px;margin:0 auto">
+      <div style="font-size:64px;margin-bottom:20px">📋</div>
+      <h3 style="font-family:var(--D);font-size:28px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:12px">AI CONTRACTS</h3>
+      <p style="font-size:14px;color:var(--MUTED);line-height:1.7;margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto">Generate complete professional contracts with 10 legal sections in seconds. Create a free account to access this feature.</p>
+      <button class="bh y" onclick="window.location.href='inscription.html'" style="margin:0 auto">🚀 CREATE FREE ACCOUNT</button>
     </div>
   </div>
 </section>
