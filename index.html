@@ -535,7 +535,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
       </div>
       <label class="aif-label" style="margin-top:14px">Additional Details</label>
       <input class="aif-input" id="evDetails" placeholder="300 people, festive atmosphere, ending at 5am..."/>
-      <button class="brun" id="matchBtn" onclick="checkAuthAndRun('matching')">
+      <button class="brun" id="matchBtn" onclick="runMatching()">
         <div class="spin" id="matchSpin"></div>
         <span id="matchLabel">⚡ FIND DJs →</span>
       </button>
@@ -572,7 +572,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
       <input class="aif-input" id="cRider" placeholder="2x CDJ-2000 NXS2, Pioneer DJM-900..."/>
       <label class="aif-label">Special Clauses</label>
       <input class="aif-input" id="cClauses" placeholder="Dressing room required, access 1h before..." style="margin-bottom:0"/>
-      <button class="brun" id="contractBtn" onclick="checkAuthAndRun('contract')" style="margin-top:14px">
+      <button class="brun" id="contractBtn" onclick="runContract()" style="margin-top:14px">
         <div class="spin" id="contractSpin"></div>
         <span id="contractLabel">📋 GENERATE CONTRACT →</span>
       </button>
@@ -737,23 +737,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 });
-
-// Fonction pour vérifier la connexion avant d'utiliser Matching IA ou Contrats
-function checkAuthAndRun(action) {
-    if (localStorage.getItem('cue_logged_in') !== 'true') {
-        // Pas connecté - afficher message et rediriger
-        if (confirm('🔒 Tu dois être connecté pour utiliser cette fonctionnalité.\n\nVeux-tu te connecter maintenant ?')) {
-            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href + '#' + (action === 'matching' ? 'matching' : 'contracts'));
-        }
-        return;
-    }
-    // Connecté - exécuter l'action
-    if (action === 'matching') {
-        runMatching();
-    } else if (action === 'contract') {
-        runContract();
-    }
-}
 
 function openAuth(){document.getElementById('authOverlay').classList.remove('hidden');}
 function openAuthAs(role){selectRole(role);openAuth();}
