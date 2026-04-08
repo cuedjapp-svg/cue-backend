@@ -66,6 +66,12 @@ body{background:var(--BG);color:var(--TEXT);font-family:var(--B);min-height:100v
 .stat-label{font-size:11px;color:var(--MUTED);text-transform:uppercase;letter-spacing:2px;margin-top:6px}
 .stat-detail{font-size:11px;color:var(--MUTED);margin-top:8px}
 
+/* ─── SPINNER ─── */
+.spin{width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulsing{0%,100%{opacity:.4}50%{opacity:1}}
+.pulsing{animation:pulsing 1.5s ease-in-out infinite}
+
 /* ─── SECTIONS ─── */
 .section{margin-bottom:32px}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
@@ -230,6 +236,14 @@ body{background:var(--BG);color:var(--TEXT);font-family:var(--B);min-height:100v
           <span class="icon">📊</span>
           <span class="label">Vue d'ensemble</span>
         </a>
+        <a class="nav-item" onclick="showPage('matching')">
+          <span class="icon">🎯</span>
+          <span class="label">AI Matching</span>
+        </a>
+        <a class="nav-item" onclick="showPage('contracts')">
+          <span class="icon">📋</span>
+          <span class="label">Contracts</span>
+        </a>
         <a class="nav-item" onclick="showPage('messages')">
           <span class="icon">📬</span>
           <span class="label">Messages</span>
@@ -331,6 +345,126 @@ body{background:var(--BG);color:var(--TEXT);font-family:var(--B);min-height:100v
         </div>
         <div class="activity-list" id="activityList">
           <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- AI MATCHING PAGE -->
+    <div class="page-view" id="page-matching">
+      <div class="page-header">
+        <h1 class="page-title">🎯 AI <span>Matching</span></h1>
+        <p class="page-subtitle">Décris ton événement et laisse notre IA sélectionner les meilleurs profils</p>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+        <div style="background:var(--CARD);border:1px solid var(--BORDER);padding:32px">
+          <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Event Type</label>
+          <select id="evType" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none">
+            <option>Club Night</option><option>Wedding</option><option>Festival</option>
+            <option>Private Event</option><option>Corporate Event</option><option>Birthday Party</option>
+          </select>
+          
+          <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Vibe / Atmosphere</label>
+          <input id="evVibe" placeholder="House & Techno, underground vibes..." style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Budget (€)</label>
+              <select id="evBudget" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none">
+                <option>Less than 300€</option><option>300€ - 600€</option><option>600€ - 1000€</option><option>1000€+</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">City</label>
+              <input id="evCity" placeholder="Paris, London..." style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;outline:none"/>
+            </div>
+          </div>
+          
+          <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px;margin-top:14px">Additional Details</label>
+          <input id="evDetails" placeholder="300 people, festive atmosphere, ending at 5am..." style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+          
+          <button id="matchBtn" onclick="runMatching()" style="width:100%;padding:14px;background:var(--Y);border:none;color:#000;font-family:var(--D);font-size:18px;font-weight:900;letter-spacing:3px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+            <span id="matchSpin" class="spin"></span>
+            <span id="matchLabel">⚡ FIND DJs →</span>
+          </button>
+        </div>
+        
+        <div id="matchResults" style="background:var(--CARD);border:1px solid var(--BORDER);padding:32px;min-height:400px">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px">
+            <div style="font-size:40px;opacity:.15">🎧</div>
+            <div style="font-family:var(--D);font-size:20px;font-weight:900;text-transform:uppercase;color:#fff;opacity:.15">Your DJs will appear here</div>
+            <div style="font-size:12px;color:#aaa;text-align:center;max-width:220px;line-height:1.7">Fill in the form and launch matching to see AI recommendations.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CONTRACTS PAGE -->
+    <div class="page-view" id="page-contracts">
+      <div class="page-header">
+        <h1 class="page-title">📋 AI <span>Contracts</span></h1>
+        <p class="page-subtitle">Génère un contrat professionnel complet en 30 secondes</p>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+        <div style="background:var(--CARD);border:1px solid var(--BORDER);padding:32px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">DJ Name *</label>
+              <input id="cDJ" placeholder="DJ Maxime" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Venue / Organiser *</label>
+              <input id="cVenue" placeholder="Club Le Rex" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+            </div>
+          </div>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Date</label>
+              <input type="date" id="cDate" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Fee (€)</label>
+              <input type="number" id="cFee" placeholder="800" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+            </div>
+          </div>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Start</label>
+              <input type="time" id="cStart" value="23:00" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">End</label>
+              <input type="time" id="cEnd" value="05:00" style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+            </div>
+          </div>
+          
+          <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Technical Rider</label>
+          <input id="cRider" placeholder="2x CDJ-2000 NXS2, Pioneer DJM-900..." style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+          
+          <label style="display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--MUTED);margin-bottom:6px">Special Clauses</label>
+          <input id="cClauses" placeholder="Dressing room required, access 1h before..." style="width:100%;background:#000;border:1px solid var(--BORDER);padding:11px 14px;color:var(--TEXT);font-family:var(--B);font-size:13px;margin-bottom:14px;outline:none"/>
+          
+          <button id="contractBtn" onclick="runContract()" style="width:100%;padding:14px;background:var(--Y);border:none;color:#000;font-family:var(--D);font-size:18px;font-weight:900;letter-spacing:3px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+            <span id="contractSpin" class="spin"></span>
+            <span id="contractLabel">📋 GENERATE CONTRACT →</span>
+          </button>
+        </div>
+        
+        <div>
+          <div id="contractOutput" style="background:#050505;border:1px solid var(--BORDER);min-height:400px;font-size:13px;color:#ccc;line-height:1.8;position:relative;overflow:hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:400px;gap:14px">
+              <div style="font-size:40px;opacity:.15">📋</div>
+              <div style="font-family:var(--D);font-size:20px;font-weight:900;text-transform:uppercase;color:#fff;opacity:.15">Your contract here</div>
+              <div style="font-size:12px;color:#aaa;text-align:center;max-width:220px;line-height:1.7">Fill in the information and generate your complete professional contract.</div>
+            </div>
+          </div>
+          <div id="contractToolbar" style="display:none;gap:10px;margin-top:14px">
+            <button onclick="copyContract()" id="copyBtn" style="padding:8px 18px;font-family:var(--D);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;background:rgba(255,195,0,.1);color:var(--Y);border:1px solid rgba(255,195,0,.25)">📋 Copy</button>
+            <button onclick="window.print()" style="padding:8px 18px;font-family:var(--D);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--MUTED);border:1px solid var(--BORDER)">🖨 Print</button>
+          </div>
         </div>
       </div>
     </div>
@@ -708,6 +842,152 @@ function confirmDelete() {
 function logout() {
   localStorage.removeItem('cue_logged_in');
   window.location.href = 'index.html';
+}
+
+// ═══════════════════════════════════════════════════════
+// AI MATCHING & CONTRACTS FUNCTIONS
+// ═══════════════════════════════════════════════════════
+
+const API_BASE = '/.netlify/functions';
+
+async function runMatching() {
+  const btn = document.getElementById('matchBtn');
+  const spin = document.getElementById('matchSpin');
+  const lab = document.getElementById('matchLabel');
+  const out = document.getElementById('matchResults');
+  
+  btn.disabled = true;
+  spin.style.display = 'inline-block';
+  lab.textContent = 'Searching...';
+  out.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px"><div style="font-size:40px" class="pulsing">🎧</div><div style="font-family:var(--D);font-size:20px;font-weight:900;text-transform:uppercase;color:var(--Y)">Analysing...</div></div>';
+  
+  const payload = {
+    type: document.getElementById('evType').value,
+    vibe: document.getElementById('evVibe').value || 'Non précisé',
+    budget: document.getElementById('evBudget').value,
+    city: document.getElementById('evCity').value || 'Non précisée',
+    details: document.getElementById('evDetails').value || 'Aucun'
+  };
+  
+  try {
+    const res = await fetch(`${API_BASE}/match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Erreur serveur');
+    
+    const djs = data.djs;
+    out.innerHTML = '<div style="display:flex;flex-direction:column;gap:16px">' + djs.map(d => `
+      <div style="background:#0a0a0a;border:1px solid var(--BORDER);padding:22px;display:flex;gap:18px;align-items:flex-start">
+        <div style="width:52px;height:52px;background:var(--Y);display:flex;align-items:center;justify-content:center;font-family:var(--D);font-size:24px;font-weight:900;color:#000;flex-shrink:0">${d.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</div>
+        <div style="flex:1">
+          <div style="font-family:var(--D);font-size:18px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:.5px">${d.name}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+            ${d.tags.map(t => `<span style="font-size:9px;font-weight:700;padding:2px 8px;border:1px solid var(--Y);color:var(--Y);text-transform:uppercase;letter-spacing:1px">${t}</span>`).join('')}
+            <span style="font-size:9px;font-weight:700;padding:2px 8px;border:1px solid var(--BORDER);color:var(--MUTED);text-transform:uppercase;letter-spacing:1px">${d.price}</span>
+          </div>
+          <div style="font-size:12px;color:var(--MUTED);margin-top:8px;line-height:1.65">${d.bio}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:var(--D);font-size:22px;font-weight:900;color:var(--Y);line-height:1">${d.match}%</div>
+          <div style="font-size:9px;color:var(--MUTED);letter-spacing:1px;text-transform:uppercase">Match</div>
+          <button style="margin-top:10px;padding:6px 14px;font-size:11px;background:var(--Y);border:none;color:#000;font-family:var(--D);font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer">BOOK</button>
+        </div>
+      </div>
+    `).join('') + '</div>';
+  } catch (e) {
+    out.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%"><div style="color:#ff4444;font-family:var(--D);font-size:18px">❌ ${e.message}</div></div>`;
+  }
+  
+  btn.disabled = false;
+  spin.style.display = 'none';
+  lab.textContent = '⚡ FIND DJs →';
+}
+
+let contractText = '';
+
+async function runContract() {
+  const dj = document.getElementById('cDJ').value.trim();
+  const venue = document.getElementById('cVenue').value.trim();
+  
+  if (!dj || !venue) {
+    alert('Le nom du DJ et du Venue sont requis.');
+    return;
+  }
+  
+  const btn = document.getElementById('contractBtn');
+  const spin = document.getElementById('contractSpin');
+  const lab = document.getElementById('contractLabel');
+  const out = document.getElementById('contractOutput');
+  const toolbar = document.getElementById('contractToolbar');
+  
+  btn.disabled = true;
+  spin.style.display = 'inline-block';
+  lab.textContent = 'Generating...';
+  toolbar.style.display = 'none';
+  out.innerHTML = '<div style="text-align:center;padding:40px;color:var(--Y)">⚡ Génération du contrat en cours...</div>';
+  
+  const payload = {
+    dj,
+    venue,
+    date: document.getElementById('cDate').value,
+    start: document.getElementById('cStart').value,
+    end: document.getElementById('cEnd').value,
+    fee: parseFloat(document.getElementById('cFee').value) || 0,
+    rider: document.getElementById('cRider').value,
+    clauses: document.getElementById('cClauses').value
+  };
+  
+  try {
+    const res = await fetch(`${API_BASE}/contract`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Erreur serveur');
+    
+    contractText = data.contract_text;
+    const text = contractText;
+    const dateVal = document.getElementById('cDate').value;
+    const feeVal = document.getElementById('cFee').value;
+    const startVal = document.getElementById('cStart').value;
+    const endVal = document.getElementById('cEnd').value;
+    const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+    
+    let html = '<div style="background:var(--Y);padding:18px 28px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-family:var(--D);font-size:22px;font-weight:900;color:#000;letter-spacing:2px">CUE</div><div style="font-size:9px;color:rgba(0,0,0,.5);letter-spacing:1px;text-transform:uppercase;margin-top:2px">DJ Performance Contract</div></div><div style="text-align:right"><div style="font-size:10px;color:#000;font-weight:700">' + dj + ' x ' + venue + '</div><div style="font-size:9px;color:rgba(0,0,0,.5);margin-top:2px">' + (dateVal || 'Date TBC') + ' - ' + startVal + ' to ' + endVal + (feeVal ? ' - ' + feeVal + '€' : '') + '</div></div></div><div style="padding:28px">';
+    
+    var re = /###SECTION_(\d+):\s*([^#]+)###([\s\S]*?)(?=###SECTION_|\s*$)/g;
+    var m, found = false;
+    while ((m = re.exec(text)) !== null) {
+      found = true;
+      html += '<div style="margin-bottom:20px"><div style="font-family:var(--D);font-size:11px;font-weight:900;text-transform:uppercase;color:var(--Y);letter-spacing:3px;display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,195,0,.15)"><span style="background:var(--Y);color:#000;font-size:9px;font-weight:900;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + m[1].trim() + '</span>' + m[2].trim() + '</div><p style="color:#ccc;line-height:1.9;margin-bottom:4px">' + m[3].trim().replace(/\n/g, '<br>') + '</p></div>';
+    }
+    if (!found) html += '<p style="color:#ccc">' + text.replace(/\n/g, '<br>') + '</p>';
+    html += '</div><div style="background:#0a0a0a;border-top:1px solid var(--BORDER);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:9px;color:#444;letter-spacing:1px;text-transform:uppercase">Generated by CUE AI - ' + today + '</span><span style="font-size:9px;color:var(--Y);letter-spacing:1px;text-transform:uppercase">OFFICIAL DOCUMENT</span></div>';
+    
+    out.innerHTML = html;
+    toolbar.style.display = 'flex';
+  } catch (e) {
+    out.innerHTML = `<div style="padding:20px;color:#ff4444">❌ ${e.message}</div>`;
+  }
+  
+  btn.disabled = false;
+  spin.style.display = 'none';
+  lab.textContent = '📋 GENERATE CONTRACT →';
+}
+
+function copyContract() {
+  navigator.clipboard?.writeText(contractText);
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = '✓ Copied!';
+  btn.style.color = '#00c864';
+  setTimeout(() => {
+    btn.textContent = '📋 Copy';
+    btn.style.color = '';
+  }, 2000);
 }
 </script>
 
