@@ -535,7 +535,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
       </div>
       <label class="aif-label" style="margin-top:14px">Additional Details</label>
       <input class="aif-input" id="evDetails" placeholder="300 people, festive atmosphere, ending at 5am..."/>
-      <button class="brun" id="matchBtn" onclick="checkAuthAndRun('matching')">
+      <button class="brun" id="matchBtn" onclick="runMatching()">
         <div class="spin" id="matchSpin"></div>
         <span id="matchLabel">⚡ FIND DJs →</span>
       </button>
@@ -572,7 +572,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
       <input class="aif-input" id="cRider" placeholder="2x CDJ-2000 NXS2, Pioneer DJM-900..."/>
       <label class="aif-label">Special Clauses</label>
       <input class="aif-input" id="cClauses" placeholder="Dressing room required, access 1h before..." style="margin-bottom:0"/>
-      <button class="brun" id="contractBtn" onclick="checkAuthAndRun('contract')" style="margin-top:14px">
+      <button class="brun" id="contractBtn" onclick="runContract()" style="margin-top:14px">
         <div class="spin" id="contractSpin"></div>
         <span id="contractLabel">📋 GENERATE CONTRACT →</span>
       </button>
@@ -640,7 +640,7 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
   </div>
   <div class="fcol"><h5>Platform</h5><ul><li><a href="#features">Features</a></li><li><a href="#matching">AI Matching</a></li><li><a href="#contracts">Contracts</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
   <div class="fcol"><h5>Company</h5><ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Press</a></li><li><a href="#">Contact</a></li></ul></div>
-  <div class="fcol"><h5>Contact</h5><ul><li><a href="/cdn-cgi/l/email-protection#d1b2a4b4ffb5bbffb0a1a191b6bcb0b8bdffb2bebc"><span class="__cf_email__" data-cfemail="157660703b717f3b746565557278747c793b767a78">[email&#160;protected]</span></a></li><li><a href="tel:+33767011532">+33 7 67 01 15 32</a></li><li><a href="#">@cuedjapp</a></li></ul></div>
+  <div class="fcol"><h5>Contact</h5><ul><li><a href="/cdn-cgi/l/email-protection#5e3d2b3b703a34703f2e2e1e39333f3732703d3133"><span class="__cf_email__" data-cfemail="bfdccada91dbd591decfcfffd8d2ded6d391dcd0d2">[email&#160;protected]</span></a></li><li><a href="tel:+33767011532">+33 7 67 01 15 32</a></li><li><a href="#">@cuedjapp</a></li></ul></div>
 </footer>
 <div class="fbot">
   <span>© 2025 CUE. All rights reserved.</span>
@@ -721,39 +721,10 @@ footer{border-top:1px solid var(--BORDER);padding:60px 52px 30px;display:grid;gr
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API_BASE = '/.netlify/functions';
 let currentUser = null, selectedRole = null;
 const USERS = [{email:'stanislas.kleb@outlook.com', pass:'Stan131234', roles:['dj','venue'], name:'Stanislas Kleb'}];
-
-// Vérifier si l'utilisateur est connecté via le nouveau système
-document.addEventListener('DOMContentLoaded', function() {
-    if (localStorage.getItem('cue_logged_in') === 'true') {
-        const user = JSON.parse(localStorage.getItem('cue_user') || '{}');
-        const navCta = document.getElementById('navCta');
-        navCta.innerHTML = `
-            <button class="bg" onclick="window.location.href='dashboard.html'">Dashboard</button>
-            <button class="bp" onclick="localStorage.removeItem('cue_logged_in'); window.location.reload()">Déconnexion</button>
-        `;
-    }
-});
-
-// Fonction pour vérifier la connexion avant d'utiliser Matching IA ou Contrats
-function checkAuthAndRun(action) {
-    if (localStorage.getItem('cue_logged_in') !== 'true') {
-        // Pas connecté - afficher message et rediriger
-        if (confirm('🔒 Tu dois être connecté pour utiliser cette fonctionnalité.\n\nVeux-tu te connecter maintenant ?')) {
-            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href + '#' + (action === 'matching' ? 'matching' : 'contracts'));
-        }
-        return;
-    }
-    // Connecté - exécuter l'action
-    if (action === 'matching') {
-        runMatching();
-    } else if (action === 'contract') {
-        runContract();
-    }
-}
 
 function openAuth(){document.getElementById('authOverlay').classList.remove('hidden');}
 function openAuthAs(role){selectRole(role);openAuth();}
@@ -804,11 +775,10 @@ function doLogin(){
 }
 function logout(){
   currentUser=null;selectedRole=null;
-  localStorage.removeItem('cue_logged_in');
   document.getElementById('dashDJ').classList.remove('active');
   document.getElementById('dashVenue').classList.remove('active');
   document.getElementById('mainSite').style.display='block';
-  document.getElementById('navCta').innerHTML=`<button class="bg" onclick="window.location.href='login.html'">Connexion</button><button class="bp" onclick="window.location.href='inscription.html'">S'inscrire</button>`;
+  document.getElementById('navCta').innerHTML=`<button class="bg" onclick="openAuth()">Login</button><button class="bp" onclick="openAuth()">Join CUE</button>`;
   window.scrollTo(0,0);
 }
 function goHome(){
@@ -835,7 +805,7 @@ async function runMatching(){
     const data=await res.json();
     if(!res.ok) throw new Error(data.detail||'Erreur serveur');
     const djs=data.djs;
-    out.innerHTML='<div class="dj-results">'+djs.map(d=>`<div class="dj-card"><div class="dj-avatar">${d.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div style="flex:1"><div class="dj-name">${d.name}</div><div class="dj-tags">${d.tags.map(t=>`<span class="dj-tag y">${t}</span>`).join('')}<span class="dj-tag">${d.price}</span></div><div class="dj-desc">${d.bio}</div></div><div style="text-align:right;flex-shrink:0"><div class="dj-match">${d.match}%</div><div class="dj-match-label">Match</div><button class="bp" style="margin-top:10px;padding:6px 14px;font-size:11px" onclick="window.location.href='inscription.html'">BOOK</button></div></div>`).join('')+'</div>';
+    out.innerHTML='<div class="dj-results">'+djs.map(d=>`<div class="dj-card"><div class="dj-avatar">${d.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div style="flex:1"><div class="dj-name">${d.name}</div><div class="dj-tags">${d.tags.map(t=>`<span class="dj-tag y">${t}</span>`).join('')}<span class="dj-tag">${d.price}</span></div><div class="dj-desc">${d.bio}</div></div><div style="text-align:right;flex-shrink:0"><div class="dj-match">${d.match}%</div><div class="dj-match-label">Match</div><button class="bp" style="margin-top:10px;padding:6px 14px;font-size:11px" onclick="openAuth()">BOOK</button></div></div>`).join('')+'</div>';
   }catch(e){out.innerHTML=`<div class="result-placeholder"><div class="result-placeholder-text" style="color:#ff4444;opacity:1">❌ ${e.message}</div></div>`;}
   btn.disabled=false;spin.classList.remove('on');lab.textContent='⚡ FIND DJs →';
 }
