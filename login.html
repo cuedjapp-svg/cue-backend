@@ -154,9 +154,16 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:100px
 // Check if already logged in
 document.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem('cue_logged_in') === 'true') {
-    window.location.href = 'dashboard.html';
+    const redirect = new URLSearchParams(window.location.search).get('redirect');
+    window.location.href = redirect || 'dashboard.html';
   }
 });
+
+// Get redirect URL from params
+function getRedirectUrl() {
+  const redirect = new URLSearchParams(window.location.search).get('redirect');
+  return redirect || 'dashboard.html';
+}
 
 // Handle login
 async function handleLogin(e) {
@@ -207,7 +214,7 @@ async function handleLogin(e) {
       // Success
       document.getElementById('successAlert').classList.add('show');
       localStorage.setItem('cue_logged_in', 'true');
-      setTimeout(() => window.location.href = 'dashboard.html', 1500);
+      setTimeout(() => window.location.href = getRedirectUrl(), 1500);
       return;
     }
   }
@@ -230,7 +237,7 @@ async function handleLogin(e) {
     localStorage.setItem('cue_logged_in', 'true');
     
     document.getElementById('successAlert').classList.add('show');
-    setTimeout(() => window.location.href = 'dashboard.html', 1500);
+    setTimeout(() => window.location.href = getRedirectUrl(), 1500);
     return;
   }
   
